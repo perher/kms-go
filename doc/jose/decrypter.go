@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/google/tink/go/keyset"
+	"github.com/tink-crypto/tink-go/v2/keyset"
 
 	"github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/composite"
 	"github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/composite/api"

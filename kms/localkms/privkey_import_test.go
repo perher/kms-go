@@ -11,13 +11,14 @@ import (
 	"crypto/ed25519"
 	"crypto/elliptic"
 	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"math/big"
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	tinkpb "github.com/google/tink/go/proto/tink_go_proto"
 	"github.com/stretchr/testify/require"
+	tinkpb "github.com/tink-crypto/tink-go/v2/proto/tink_go_proto"
 
 	"github.com/trustbloc/kms-go/spi/kms"
 
@@ -73,7 +74,7 @@ func TestImportKeySetInvalid(t *testing.T) {
 			kmsProvider: &mockProvider{
 				storage: newInMemoryKMSStore(),
 				secretLock: &mocksecretlock.MockSecretLock{
-					ValEncrypt: "",
+					ValEncrypt: base64.URLEncoding.EncodeToString([]byte("successEncryption")),
 					ValDecrypt: "",
 				},
 			},
@@ -84,7 +85,7 @@ func TestImportKeySetInvalid(t *testing.T) {
 			kmsProvider: &mockProvider{
 				storage: newInMemoryKMSStore(),
 				secretLock: &mocksecretlock.MockSecretLock{
-					ValEncrypt: "",
+					ValEncrypt: base64.URLEncoding.EncodeToString([]byte("successEncryption")),
 					ErrEncrypt: fmt.Errorf("bad encryption"),
 					ValDecrypt: "",
 				},
@@ -100,7 +101,7 @@ func TestImportKeySetInvalid(t *testing.T) {
 			kmsProvider: &goMockProvider{
 				storage: newInMemoryKMSStore(),
 				secretLock: &mocksecretlock.MockSecretLock{
-					ValEncrypt: "",
+					ValEncrypt: base64.URLEncoding.EncodeToString([]byte("successEncryption")),
 					ValDecrypt: "",
 				},
 			},

@@ -15,8 +15,8 @@ import (
 	"math/big"
 
 	josecipher "github.com/go-jose/go-jose/v3/cipher"
-	hybrid "github.com/google/tink/go/hybrid/subtle"
-	"github.com/google/tink/go/keyset"
+	hybrid "github.com/tink-crypto/tink-go/v2/hybrid/subtle"
+	"github.com/tink-crypto/tink-go/v2/keyset"
 	"golang.org/x/crypto/chacha20poly1305"
 	"golang.org/x/crypto/curve25519"
 

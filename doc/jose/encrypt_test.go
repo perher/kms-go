@@ -14,8 +14,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/google/tink/go/aead"
-	"github.com/google/tink/go/keyset"
+	"github.com/tink-crypto/tink-go/v2/aead"
+	"github.com/tink-crypto/tink-go/v2/keyset"
 	"github.com/stretchr/testify/require"
 
 	"github.com/trustbloc/kms-go/crypto/tinkcrypto"

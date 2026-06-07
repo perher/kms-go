@@ -10,9 +10,9 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/google/tink/go/core/registry"
-	commonpb "github.com/google/tink/go/proto/common_go_proto"
-	"github.com/google/tink/go/testutil"
+	"github.com/tink-crypto/tink-go/v2/core/registry"
+	commonpb "github.com/tink-crypto/tink-go/v2/proto/common_go_proto"
+	"github.com/tink-crypto/tink-go/v2/testutil"
 	"github.com/stretchr/testify/require"
 
 	secp256k1pb "github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/proto/secp256k1_go_proto"

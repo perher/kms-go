@@ -12,9 +12,9 @@ import (
 	"log"
 	"testing"
 
-	tinkaead "github.com/google/tink/go/aead"
-	"github.com/google/tink/go/core/registry"
-	"github.com/google/tink/go/keyset"
+	tinkaead "github.com/tink-crypto/tink-go/v2/aead"
+	"github.com/tink-crypto/tink-go/v2/core/registry"
+	"github.com/tink-crypto/tink-go/v2/keyset"
 
 	"github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/aead"
 )

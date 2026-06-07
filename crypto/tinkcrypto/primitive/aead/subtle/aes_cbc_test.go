@@ -14,7 +14,7 @@ import (
 	"testing"
 
 	josecipher "github.com/go-jose/go-jose/v3/cipher"
-	"github.com/google/tink/go/subtle/random"
+	"github.com/tink-crypto/tink-go/v2/subtle/random"
 	"github.com/stretchr/testify/require"
 
 	"github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/aead/subtle"

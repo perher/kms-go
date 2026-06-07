@@ -14,10 +14,10 @@ import (
 	"io"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/google/tink/go/aead"
-	"github.com/google/tink/go/keyset"
-	ed25519pb "github.com/google/tink/go/proto/ed25519_go_proto"
-	tinkpb "github.com/google/tink/go/proto/tink_go_proto"
+	"github.com/tink-crypto/tink-go/v2/aead"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	ed25519pb "github.com/tink-crypto/tink-go/v2/proto/ed25519_go_proto"
+	tinkpb "github.com/tink-crypto/tink-go/v2/proto/tink_go_proto"
 	"golang.org/x/crypto/nacl/box"
 
 	"github.com/trustbloc/kms-go/doc/util/jwkkid"

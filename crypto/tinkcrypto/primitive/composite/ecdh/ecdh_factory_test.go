@@ -15,17 +15,17 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/google/tink/go/aead"
-	"github.com/google/tink/go/core/primitiveset"
-	hybrid "github.com/google/tink/go/hybrid/subtle"
-	"github.com/google/tink/go/keyset"
-	commonpb "github.com/google/tink/go/proto/common_go_proto"
-	tinkpb "github.com/google/tink/go/proto/tink_go_proto"
-	"github.com/google/tink/go/signature"
-	"github.com/google/tink/go/subtle/random"
-	"github.com/google/tink/go/testkeyset"
-	"github.com/google/tink/go/testutil"
 	"github.com/stretchr/testify/require"
+	"github.com/tink-crypto/tink-go/v2/aead"
+	"github.com/tink-crypto/tink-go/v2/core/primitiveset"
+	hybrid "github.com/tink-crypto/tink-go/v2/hybrid/subtle"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	commonpb "github.com/tink-crypto/tink-go/v2/proto/common_go_proto"
+	tinkpb "github.com/tink-crypto/tink-go/v2/proto/tink_go_proto"
+	"github.com/tink-crypto/tink-go/v2/signature"
+	"github.com/tink-crypto/tink-go/v2/subtle/random"
+	"github.com/tink-crypto/tink-go/v2/testkeyset"
+	"github.com/tink-crypto/tink-go/v2/testutil"
 
 	"github.com/trustbloc/kms-go/util/cryptoutil"
 
@@ -278,7 +278,7 @@ func TestECDHESFactoryWithBadKeysetType(t *testing.T) {
 	// creating new primitives with an invalid keyset (should be public keyset) should fail
 	e, err := NewECDHEncrypt(khPriv)
 	require.EqualError(t, err, fmt.Sprintf("ecdh_factory: cannot obtain primitive set: "+
-		"registry.PrimitivesWithKeyManager: cannot get primitive from key: registry.GetKeyManager: "+
+		"handle.PrimitivesWithKeyManager: cannot get primitive from key: registry.GetKeyManager: "+
 		"unsupported key type: %s",
 		badKeyURLKeyTypeURL))
 	require.Empty(t, e)
@@ -286,7 +286,7 @@ func TestECDHESFactoryWithBadKeysetType(t *testing.T) {
 	// creating new primitives with a keyset containing an invalid key type should fail
 	d, err := NewECDHDecrypt(khPriv)
 	require.EqualError(t, err, fmt.Sprintf("ecdh_factory: cannot obtain primitive set: "+
-		"registry.PrimitivesWithKeyManager: cannot get primitive from key: registry.GetKeyManager: "+
+		"handle.PrimitivesWithKeyManager: cannot get primitive from key: registry.GetKeyManager: "+
 		"unsupported key type: %s",
 		badKeyURLKeyTypeURL))
 	require.Empty(t, d)

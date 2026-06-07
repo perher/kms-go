@@ -11,17 +11,17 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/google/tink/go/core/cryptofmt"
-	"github.com/google/tink/go/core/primitiveset"
-	"github.com/google/tink/go/keyset"
-	commonpb "github.com/google/tink/go/proto/common_go_proto"
-	tinkpb "github.com/google/tink/go/proto/tink_go_proto"
-	"github.com/google/tink/go/signature"
-	"github.com/google/tink/go/subtle"
-	"github.com/google/tink/go/testkeyset"
-	"github.com/google/tink/go/testutil"
-	"github.com/google/tink/go/tink"
 	"github.com/stretchr/testify/require"
+	"github.com/tink-crypto/tink-go/v2/core/cryptofmt"
+	"github.com/tink-crypto/tink-go/v2/core/primitiveset"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	commonpb "github.com/tink-crypto/tink-go/v2/proto/common_go_proto"
+	tinkpb "github.com/tink-crypto/tink-go/v2/proto/tink_go_proto"
+	"github.com/tink-crypto/tink-go/v2/signature"
+	"github.com/tink-crypto/tink-go/v2/subtle"
+	"github.com/tink-crypto/tink-go/v2/testkeyset"
+	"github.com/tink-crypto/tink-go/v2/testutil"
+	"github.com/tink-crypto/tink-go/v2/tink"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
 
 	"github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/bbs/api"
@@ -134,7 +134,7 @@ func TestSignerVerifierFactory(t *testing.T) {
 			} else {
 				// building new signer with private keyset handle that has a bad Tink key url parameter should fail
 				require.EqualError(t, err, "bbs_sign_factory: cannot obtain primitive set: "+
-					"registry.PrimitivesWithKeyManager: cannot get primitive from key: registry.GetKeyManager: "+
+					"handle.PrimitivesWithKeyManager: cannot get primitive from key: registry.GetKeyManager: "+
 					"unsupported key type: bad/url")
 
 				// set valid keyURL temporarily to rebuild a valid signer and continue test
@@ -350,7 +350,7 @@ func TestSignerVerifierFactory(t *testing.T) {
 
 					_, err = NewVerifier(tmpKHPub)
 					require.EqualError(t, err, "bbs_verifier_factory: cannot obtain primitive set: "+
-						"registry.PrimitivesWithKeyManager: cannot get primitive from key: registry.GetKeyManager: "+
+						"handle.PrimitivesWithKeyManager: cannot get primitive from key: registry.GetKeyManager: "+
 						"unsupported key type: bad/url")
 				})
 

@@ -21,7 +21,7 @@ import (
 	"time"
 
 	"github.com/bluele/gcache"
-	"github.com/google/tink/go/keyset"
+	"github.com/tink-crypto/tink-go/v2/keyset"
 
 	cryptoapi "github.com/trustbloc/kms-go/spi/crypto"
 

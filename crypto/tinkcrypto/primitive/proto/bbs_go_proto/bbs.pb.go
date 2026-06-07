@@ -11,7 +11,7 @@ import (
 	sync "sync"
 
 	proto "github.com/golang/protobuf/proto"
-	common_go_proto "github.com/google/tink/go/proto/common_go_proto"
+	common_go_proto "github.com/tink-crypto/tink-go/v2/proto/common_go_proto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )

@@ -13,7 +13,7 @@ import (
 	"fmt"
 
 	"github.com/btcsuite/btcutil/base58"
-	commonpb "github.com/google/tink/go/proto/common_go_proto"
+	commonpb "github.com/tink-crypto/tink-go/v2/proto/common_go_proto"
 
 	afgocrypto "github.com/trustbloc/kms-go/crypto"
 	"github.com/trustbloc/kms-go/doc/util/fingerprint"

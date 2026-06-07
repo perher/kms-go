@@ -15,12 +15,12 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/proto"
-	tinkaead "github.com/google/tink/go/aead"
-	hybrid "github.com/google/tink/go/hybrid/subtle"
-	"github.com/google/tink/go/insecurecleartextkeyset"
-	"github.com/google/tink/go/keyset"
-	commonpb "github.com/google/tink/go/proto/common_go_proto"
-	tinkpb "github.com/google/tink/go/proto/tink_go_proto"
+	tinkaead "github.com/tink-crypto/tink-go/v2/aead"
+	hybrid "github.com/tink-crypto/tink-go/v2/hybrid/subtle"
+	"github.com/tink-crypto/tink-go/v2/insecurecleartextkeyset"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	commonpb "github.com/tink-crypto/tink-go/v2/proto/common_go_proto"
+	tinkpb "github.com/tink-crypto/tink-go/v2/proto/tink_go_proto"
 
 	"github.com/trustbloc/kms-go/spi/kms"
 

@@ -24,14 +24,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/tink/go/aead"
-	aeadsubtle "github.com/google/tink/go/aead/subtle"
-	"github.com/google/tink/go/core/primitiveset"
-	"github.com/google/tink/go/keyset"
-	"github.com/google/tink/go/mac"
-	"github.com/google/tink/go/signature"
-	"github.com/google/tink/go/subtle/random"
 	"github.com/stretchr/testify/require"
+	"github.com/tink-crypto/tink-go/v2/aead"
+	aeadsubtle "github.com/tink-crypto/tink-go/v2/aead/subtle"
+	"github.com/tink-crypto/tink-go/v2/core/primitiveset"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	"github.com/tink-crypto/tink-go/v2/mac"
+	"github.com/tink-crypto/tink-go/v2/signature"
+	"github.com/tink-crypto/tink-go/v2/subtle/random"
 	"golang.org/x/crypto/chacha20poly1305"
 
 	cryptoapi "github.com/trustbloc/kms-go/spi/crypto"
@@ -268,7 +268,7 @@ func decryptPOSTHandle(w http.ResponseWriter, reqBody []byte, encKH *keyset.Hand
 }
 
 func TestSignVerify(t *testing.T) {
-	kh, err := keyset.NewHandle(signature.ECDSAP384KeyTemplate())
+	kh, err := keyset.NewHandle(signature.ECDSAP256KeyTemplate())
 	require.NoError(t, err)
 
 	hf := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

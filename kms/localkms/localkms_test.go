@@ -23,9 +23,9 @@ import (
 	"testing"
 
 	"github.com/btcsuite/btcd/btcec/v2"
-	"github.com/google/tink/go/keyset"
-	"github.com/google/tink/go/subtle/random"
 	"github.com/stretchr/testify/require"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	"github.com/tink-crypto/tink-go/v2/subtle/random"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
 
 	"github.com/trustbloc/kms-go/spi/crypto"
@@ -94,7 +94,7 @@ func TestNewKMS_Failure(t *testing.T) {
 		kmsStorage, err := New("", &mockProvider{
 			storage: newInMemoryKMSStore(),
 			secretLock: &mocksecretlock.MockSecretLock{
-				ValEncrypt: "",
+				ValEncrypt: base64.URLEncoding.EncodeToString([]byte("successEncryption")),
 				ValDecrypt: "",
 			},
 		})
@@ -108,7 +108,7 @@ func TestNewKMS_Failure(t *testing.T) {
 		kmsStorage, err := New(badKeyURI, &mockProvider{
 			storage: newInMemoryKMSStore(),
 			secretLock: &mocksecretlock.MockSecretLock{
-				ValEncrypt: "",
+				ValEncrypt: base64.URLEncoding.EncodeToString([]byte("successEncryption")),
 				ValDecrypt: "",
 			},
 		})
@@ -122,7 +122,7 @@ func TestCreateGetRotateKey_Failure(t *testing.T) {
 		kmsStorage, err := New(testMasterKeyURI, &mockProvider{
 			storage: newInMemoryKMSStore(),
 			secretLock: &mocksecretlock.MockSecretLock{
-				ValEncrypt: "",
+				ValEncrypt: base64.URLEncoding.EncodeToString([]byte("successEncryption")),
 				ValDecrypt: "",
 			},
 		})
@@ -167,7 +167,7 @@ func TestCreateGetRotateKey_Failure(t *testing.T) {
 		kmsStorage, err := New(testMasterKeyURI, &mockProvider{
 			storage: mockStore,
 			secretLock: &mocksecretlock.MockSecretLock{
-				ValEncrypt: "",
+				ValEncrypt: base64.URLEncoding.EncodeToString([]byte("successEncryption")),
 				ValDecrypt: "",
 			},
 		})
@@ -183,7 +183,7 @@ func TestCreateGetRotateKey_Failure(t *testing.T) {
 		kmsStorage, err := New(testMasterKeyURI, &mockProvider{
 			storage: newInMemoryKMSStore(),
 			secretLock: &mocksecretlock.MockSecretLock{
-				ValEncrypt: "",
+				ValEncrypt: base64.URLEncoding.EncodeToString([]byte("successEncryption")),
 				ValDecrypt: "",
 			},
 		})

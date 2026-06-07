@@ -21,9 +21,9 @@ import (
 	"strings"
 
 	"github.com/go-jose/go-jose/v3"
-	hybrid "github.com/google/tink/go/hybrid/subtle"
-	"github.com/google/tink/go/keyset"
-	"github.com/google/tink/go/subtle/random"
+	hybrid "github.com/tink-crypto/tink-go/v2/hybrid/subtle"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	"github.com/tink-crypto/tink-go/v2/subtle/random"
 	"golang.org/x/crypto/curve25519"
 
 	"github.com/trustbloc/kms-go/crypto/tinkcrypto"

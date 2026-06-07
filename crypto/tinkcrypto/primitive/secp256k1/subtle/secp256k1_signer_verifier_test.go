@@ -11,7 +11,7 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/google/tink/go/subtle/random"
+	"github.com/tink-crypto/tink-go/v2/subtle/random"
 	"github.com/stretchr/testify/require"
 
 	subtleSignature "github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/secp256k1/subtle"

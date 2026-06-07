@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	commonpb "github.com/google/tink/go/proto/common_go_proto"
-	tinkpb "github.com/google/tink/go/proto/tink_go_proto"
+	commonpb "github.com/tink-crypto/tink-go/v2/proto/common_go_proto"
+	tinkpb "github.com/tink-crypto/tink-go/v2/proto/tink_go_proto"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
 

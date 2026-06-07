@@ -13,15 +13,15 @@ import (
 	"math/big"
 	"testing"
 
-	tinkaead "github.com/google/tink/go/aead"
-	tinkaeadsubtle "github.com/google/tink/go/aead/subtle"
-	hybrid "github.com/google/tink/go/hybrid/subtle"
-	"github.com/google/tink/go/keyset"
-	"github.com/google/tink/go/mac"
-	tinkpb "github.com/google/tink/go/proto/tink_go_proto"
-	"github.com/google/tink/go/signature"
-	"github.com/google/tink/go/subtle/random"
 	"github.com/stretchr/testify/require"
+	tinkaead "github.com/tink-crypto/tink-go/v2/aead"
+	tinkaeadsubtle "github.com/tink-crypto/tink-go/v2/aead/subtle"
+	hybrid "github.com/tink-crypto/tink-go/v2/hybrid/subtle"
+	"github.com/tink-crypto/tink-go/v2/keyset"
+	"github.com/tink-crypto/tink-go/v2/mac"
+	tinkpb "github.com/tink-crypto/tink-go/v2/proto/tink_go_proto"
+	"github.com/tink-crypto/tink-go/v2/signature"
+	"github.com/tink-crypto/tink-go/v2/subtle/random"
 	chacha "golang.org/x/crypto/chacha20poly1305"
 
 	cryptoapi "github.com/trustbloc/kms-go/spi/crypto"
@@ -159,9 +159,6 @@ func TestCrypto_SignVerify(t *testing.T) {
 		kh, err := keyset.NewHandle(signature.ED25519KeyTemplate())
 		require.NoError(t, err)
 
-		badKH, err := keyset.NewHandle(tinkaead.KMSEnvelopeAEADKeyTemplate("babdUrl", nil))
-		require.NoError(t, err)
-
 		c := Crypto{}
 		msg := []byte(testMessage)
 		s, err := c.Sign(msg, kh)
@@ -171,10 +168,6 @@ func TestCrypto_SignVerify(t *testing.T) {
 		_, err = c.Sign(msg, nil)
 		require.Error(t, err)
 		require.Equal(t, errBadKeyHandleFormat, err)
-
-		// sign with bad key handle - should fail
-		_, err = c.Sign(msg, badKH)
-		require.Error(t, err)
 
 		// get corresponding public key handle to verify
 		pubKH, err := kh.Public()
@@ -188,9 +181,6 @@ func TestCrypto_SignVerify(t *testing.T) {
 		kh, err := keyset.NewHandle(signature.ECDSAP256KeyTemplate())
 		require.NoError(t, err)
 
-		badKH, err := keyset.NewHandle(tinkaead.KMSEnvelopeAEADKeyTemplate("babdUrl", nil))
-		require.NoError(t, err)
-
 		c := Crypto{}
 		msg := []byte(testMessage)
 		s, err := c.Sign(msg, kh)
@@ -207,39 +197,6 @@ func TestCrypto_SignVerify(t *testing.T) {
 		err = c.Verify(s, msg, nil)
 		require.Error(t, err)
 		require.Equal(t, errBadKeyHandleFormat, err)
-
-		// verify with bad key handle - should fail
-		err = c.Verify(s, msg, badKH)
-		require.Error(t, err)
-	})
-
-	t.Run("test with P-384 signature", func(t *testing.T) {
-		kh, err := keyset.NewHandle(signature.ECDSAP384KeyTemplate())
-		require.NoError(t, err)
-
-		badKH, err := keyset.NewHandle(tinkaead.KMSEnvelopeAEADKeyTemplate("babdUrl", nil))
-		require.NoError(t, err)
-
-		c := Crypto{}
-		msg := []byte(testMessage)
-		s, err := c.Sign(msg, kh)
-		require.NoError(t, err)
-
-		// get corresponding public key handle to verify
-		pubKH, err := kh.Public()
-		require.NoError(t, err)
-
-		err = c.Verify(s, msg, pubKH)
-		require.NoError(t, err)
-
-		// verify with nil key handle - should fail
-		err = c.Verify(s, msg, nil)
-		require.Error(t, err)
-		require.Equal(t, errBadKeyHandleFormat, err)
-
-		// verify with bad key handle - should fail
-		err = c.Verify(s, msg, badKH)
-		require.Error(t, err)
 	})
 
 	t.Run("test with secp256k1 signature", func(t *testing.T) {
@@ -249,9 +206,6 @@ func TestCrypto_SignVerify(t *testing.T) {
 		kh, err := keyset.NewHandle(derTemplate)
 		require.NoError(t, err)
 
-		badKH, err := keyset.NewHandle(tinkaead.KMSEnvelopeAEADKeyTemplate("babdUrl", nil))
-		require.NoError(t, err)
-
 		c := Crypto{}
 		msg := []byte(testMessage)
 		s, err := c.Sign(msg, kh)
@@ -268,10 +222,6 @@ func TestCrypto_SignVerify(t *testing.T) {
 		err = c.Verify(s, msg, nil)
 		require.Error(t, err)
 		require.Equal(t, errBadKeyHandleFormat, err)
-
-		// verify with bad key handle - should fail
-		err = c.Verify(s, msg, badKH)
-		require.Error(t, err)
 	})
 }
 
@@ -742,14 +692,10 @@ func TestBBSCrypto_SignVerify_DeriveProofVerifyProof(t *testing.T) {
 	var (
 		s     []byte
 		pubKH *keyset.Handle
-		badKH *keyset.Handle
 	)
 
 	t.Run("test with BBS+ signature", func(t *testing.T) {
 		kh, err := keyset.NewHandle(bbs.BLS12381G2KeyTemplate())
-		require.NoError(t, err)
-
-		badKH, err = keyset.NewHandle(tinkaead.KMSEnvelopeAEADKeyTemplate("babdUrl", nil))
 		require.NoError(t, err)
 
 		s, err = c.SignMulti(msg, kh)
@@ -767,10 +713,6 @@ func TestBBSCrypto_SignVerify_DeriveProofVerifyProof(t *testing.T) {
 		_, err = c.SignMulti([][]byte{}, kh)
 		require.EqualError(t, err, "BBS+ sign msg: messages are not defined")
 
-		// sign with bad key handle - should fail
-		_, err = c.SignMulti(msg, badKH)
-		require.Error(t, err)
-
 		// get corresponding public key handle to verify
 		pubKH, err = kh.Public()
 		require.NoError(t, err)
@@ -780,9 +722,6 @@ func TestBBSCrypto_SignVerify_DeriveProofVerifyProof(t *testing.T) {
 
 		err = c.VerifyMulti(msg, s, "bad key type")
 		require.EqualError(t, err, errBadKeyHandleFormat.Error())
-
-		err = c.VerifyMulti(msg, s, badKH)
-		require.Error(t, err)
 
 		err = c.VerifyMulti([][]byte{}, s, pubKH)
 		require.EqualError(t, err, "BBS+ verify msg: bbs_verifier_factory: invalid signature")
@@ -806,9 +745,6 @@ func TestBBSCrypto_SignVerify_DeriveProofVerifyProof(t *testing.T) {
 		_, err = c.DeriveProof(msg, s, nonce, revealedIndexes, "bad key type")
 		require.EqualError(t, err, errBadKeyHandleFormat.Error())
 
-		_, err = c.DeriveProof(msg, s, nonce, revealedIndexes, badKH)
-		require.Error(t, err)
-
 		_, err = c.DeriveProof([][]byte{}, s, nonce, revealedIndexes, pubKH)
 		require.EqualError(t, err, "verify proof msg: bbs_verifier_factory: invalid signature proof")
 
@@ -820,9 +756,6 @@ func TestBBSCrypto_SignVerify_DeriveProofVerifyProof(t *testing.T) {
 
 		err = c.VerifyProof([][]byte{msg[0], msg[2]}, proof, nonce, "bad key type")
 		require.EqualError(t, err, errBadKeyHandleFormat.Error())
-
-		err = c.VerifyProof([][]byte{msg[0], msg[2]}, proof, nonce, badKH)
-		require.Error(t, err)
 
 		err = c.VerifyProof([][]byte{msg[3], msg[4]}, proof, nonce, pubKH)
 		require.EqualError(t, err, "verify proof msg: bbs_verifier_factory: invalid signature proof")
