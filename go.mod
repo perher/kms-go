@@ -4,7 +4,7 @@
 
 module github.com/trustbloc/kms-go
 
-go 1.25.3
+go 1.26
 
 require (
 	github.com/bluele/gcache v0.0.2
