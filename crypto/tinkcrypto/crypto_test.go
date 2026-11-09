@@ -218,7 +218,7 @@ func TestCrypto_SignVerify(t *testing.T) {
 	})
 
 	t.Run("test with P-384 signature", func(t *testing.T) {
-		kh, err := keyset.NewHandle(signature.ECDSAP384KeyTemplate())
+		kh, err := keyset.NewHandle(signature.ECDSAP384SHA512KeyTemplate())
 		require.NoError(t, err)
 
 		badKH, err := keyset.NewHandle(tinkaead.KMSEnvelopeAEADKeyTemplate("babdUrl", nil))

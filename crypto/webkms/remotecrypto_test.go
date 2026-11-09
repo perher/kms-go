@@ -269,7 +269,7 @@ func decryptPOSTHandle(w http.ResponseWriter, reqBody []byte, encKH *keyset.Hand
 }
 
 func TestSignVerify(t *testing.T) {
-	kh, err := keyset.NewHandle(signature.ECDSAP384KeyTemplate())
+	kh, err := keyset.NewHandle(signature.ECDSAP384SHA512KeyTemplate())
 	require.NoError(t, err)
 
 	hf := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
