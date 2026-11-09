@@ -615,8 +615,8 @@ func TestLocalKMS_ImportPrivateKey(t *testing.T) { // nolint:gocyclo
 
 				cryptoKey := &crypto.PublicKey{
 					KID:   ksID,
-					X:     privKey.PublicKey.X.Bytes(),
-					Y:     privKey.PublicKey.Y.Bytes(),
+					X:     privKey.X.Bytes(),
+					Y:     privKey.Y.Bytes(),
 					Curve: curveName,
 					Type:  "EC",
 				}

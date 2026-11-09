@@ -138,11 +138,11 @@ func deriveECDH(priv *ecdsa.PrivateKey, pub *ecdsa.PublicKey, size int) []byte {
 	supPubInfo := make([]byte, 4)
 	binary.BigEndian.PutUint32(supPubInfo, uint32(size)*byteSize)
 
-	if !priv.PublicKey.Curve.IsOnCurve(pub.X, pub.Y) {
+	if !priv.IsOnCurve(pub.X, pub.Y) {
 		panic("public key not on same curve as private key")
 	}
 
-	z, _ := priv.Curve.ScalarMult(pub.X, pub.Y, priv.D.Bytes())
+	z, _ := priv.ScalarMult(pub.X, pub.Y, priv.D.Bytes())
 	zBytes := z.Bytes()
 
 	// Note that calling z.Bytes() on a big.Int may strip leading zero bytes from

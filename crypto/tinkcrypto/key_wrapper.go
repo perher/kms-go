@@ -300,7 +300,7 @@ func (t *Crypto) derive1PUWithECKey(wrappingAlg string, apu, apv, tag []byte, se
 		return "", nil, nil, nil, err
 	}
 
-	ephemeralXBytes := ephemeralPrivKey.PublicKey.X.Bytes()
+	ephemeralXBytes := ephemeralPrivKey.X.Bytes()
 
 	if len(apu) == 0 {
 		apu = make([]byte, base64.RawURLEncoding.EncodedLen(len(ephemeralXBytes)))
@@ -316,7 +316,7 @@ func (t *Crypto) derive1PUWithECKey(wrappingAlg string, apu, apv, tag []byte, se
 
 	epk := &cryptoapi.PublicKey{
 		X:     ephemeralXBytes,
-		Y:     ephemeralPrivKey.PublicKey.Y.Bytes(),
+		Y:     ephemeralPrivKey.Y.Bytes(),
 		Curve: ephemeralPrivKey.PublicKey.Curve.Params().Name,
 		Type:  recPubKey.Type,
 	}
@@ -426,7 +426,7 @@ func (t *Crypto) deriveESWithECKey(apu, apv []byte, recPubKey *cryptoapi.PublicK
 		return "", nil, nil, nil, fmt.Errorf("deriveESWithECKey: failed to generate ephemeral key: %w", err)
 	}
 
-	ephemeralXBytes := ephemeralPrivKey.PublicKey.X.Bytes()
+	ephemeralXBytes := ephemeralPrivKey.X.Bytes()
 
 	if len(apu) == 0 {
 		apu = make([]byte, base64.RawURLEncoding.EncodedLen(len(ephemeralXBytes)))
@@ -436,7 +436,7 @@ func (t *Crypto) deriveESWithECKey(apu, apv []byte, recPubKey *cryptoapi.PublicK
 	kek := josecipher.DeriveECDHES(wrappingAlg, apu, apv, ephemeralPrivKey, recECPubKey, defKeySize)
 	epk := &cryptoapi.PublicKey{
 		X:     ephemeralXBytes,
-		Y:     ephemeralPrivKey.PublicKey.Y.Bytes(),
+		Y:     ephemeralPrivKey.Y.Bytes(),
 		Curve: ephemeralPrivKey.PublicKey.Curve.Params().Name,
 		Type:  recPubKey.Type,
 	}

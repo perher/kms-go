@@ -151,8 +151,8 @@ func (l *LocalKMS) buildAndImportECDSAPrivateKeyAsECDHKW(privKey *ecdsa.PrivateK
 		PublicKey: &ecdhpb.EcdhAeadPublicKey{
 			Version: 0,
 			Params:  keyFormat.Params,
-			X:       privKey.PublicKey.X.Bytes(),
-			Y:       privKey.PublicKey.Y.Bytes(),
+			X:       privKey.X.Bytes(),
+			Y:       privKey.Y.Bytes(),
 		},
 	}
 

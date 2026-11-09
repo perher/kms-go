@@ -143,8 +143,8 @@ func testPrivateKeyAsKH(t *testing.T, pubKey *cryptoapi.PublicKey) {
 		privECKey, err = ecdsa.GenerateKey(crv, rand.Reader)
 		require.NoError(t, err)
 
-		privKey.PublicKey.X = privECKey.PublicKey.X.Bytes()
-		privKey.PublicKey.Y = privECKey.PublicKey.Y.Bytes()
+		privKey.PublicKey.X = privECKey.X.Bytes()
+		privKey.PublicKey.Y = privECKey.Y.Bytes()
 		privKey.D = privECKey.D.Bytes()
 	} else {
 		pubKOPKey, privOKPKey, err = ed25519.GenerateKey(rand.Reader)

@@ -452,14 +452,14 @@ func addKDFHeaders(rawHeaders map[string]json.RawMessage, recipientWK *cryptoapi
 	rawHeaders["epk"] = mEPK
 
 	if len(recipientWK.APU) != 0 {
-		rawHeaders["apu"], err = marshaller(fmt.Sprintf("%s", recipientWK.APU))
+		rawHeaders["apu"], err = marshaller(string(recipientWK.APU))
 		if err != nil {
 			return err
 		}
 	}
 
 	if len(recipientWK.APV) != 0 {
-		rawHeaders["apv"], err = marshaller(fmt.Sprintf("%s", recipientWK.APV))
+		rawHeaders["apv"], err = marshaller(string(recipientWK.APV))
 		if err != nil {
 			return err
 		}
