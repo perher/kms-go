@@ -80,7 +80,7 @@ func (k *kmsCrypto) Verify(sig, msg []byte, pub *jwk.JWK) error {
 	return k.cr.Verify(sig, msg, kh)
 }
 
-func (k *kmsCrypto) Encrypt(msg, aad []byte, kid string) (cipher, nonce []byte, err error) {
+func (k *kmsCrypto) Encrypt(msg, aad []byte, kid string) ([]byte, []byte, error) {
 	kh, err := k.km.Get(kid)
 	if err != nil {
 		return nil, nil, err
@@ -89,7 +89,7 @@ func (k *kmsCrypto) Encrypt(msg, aad []byte, kid string) (cipher, nonce []byte, 
 	return k.cr.Encrypt(msg, aad, kh)
 }
 
-func (k *kmsCrypto) Decrypt(cipher, aad, nonce []byte, kid string) (msg []byte, err error) {
+func (k *kmsCrypto) Decrypt(cipher, aad, nonce []byte, kid string) ([]byte, error) {
 	kh, err := k.km.Get(kid)
 	if err != nil {
 		return nil, err
