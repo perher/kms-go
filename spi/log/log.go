@@ -20,12 +20,12 @@ const (
 
 // Logger represents a general-purpose logger.
 type Logger interface {
-	Panicf(msg string, args ...interface{})
-	Fatalf(msg string, args ...interface{})
-	Errorf(msg string, args ...interface{})
-	Warnf(msg string, args ...interface{})
-	Infof(msg string, args ...interface{})
-	Debugf(msg string, args ...interface{})
+	Panicf(msg string, args ...any)
+	Fatalf(msg string, args ...any)
+	Errorf(msg string, args ...any)
+	Warnf(msg string, args ...any)
+	Infof(msg string, args ...any)
+	Debugf(msg string, args ...any)
 }
 
 // LoggerProvider is a factory for moduled loggers.

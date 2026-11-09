@@ -18,12 +18,12 @@ type KeyManager interface {
 	//  - keyID of the handle
 	//  - handle instance (to private key)
 	//  - error if failure
-	Create(kt KeyType, opts ...KeyOpts) (string, interface{}, error)
+	Create(kt KeyType, opts ...KeyOpts) (string, any, error)
 	// Get key handle for the given keyID
 	// Returns:
 	//  - handle instance (to private key)
 	//  - error if failure
-	Get(keyID string) (interface{}, error)
+	Get(keyID string) (any, error)
 	// Rotate a key referenced by keyID and return a new handle of a keyset including old key and
 	// new key with type kt. It also returns the updated keyID as the first return value
 	// Some key types may require additional attributes described in `opts`
@@ -31,7 +31,7 @@ type KeyManager interface {
 	//  - new KeyID
 	//  - handle instance (to private key)
 	//  - error if failure
-	Rotate(kt KeyType, keyID string, opts ...KeyOpts) (string, interface{}, error)
+	Rotate(kt KeyType, keyID string, opts ...KeyOpts) (string, any, error)
 	// ExportPubKeyBytes will fetch a key referenced by id then gets its public key in raw bytes and returns it.
 	// The key must be an asymmetric key.
 	// Returns:
@@ -52,7 +52,7 @@ type KeyManager interface {
 	// Returns:
 	//  - handle instance to the public key of type keyType
 	//  - error if keyType is not supported, the key does not match keyType or unmarshal fails
-	PubKeyBytesToHandle(pubKey []byte, kt KeyType, opts ...KeyOpts) (interface{}, error)
+	PubKeyBytesToHandle(pubKey []byte, kt KeyType, opts ...KeyOpts) (any, error)
 	// ImportPrivateKey will import privKey into the KMS storage for the given keyType then returns the new key id and
 	// the newly persisted Handle.
 	// 'privKey' possible types are: *ecdsa.PrivateKey and ed25519.PrivateKey
@@ -63,7 +63,7 @@ type KeyManager interface {
 	//  - keyID of the handle
 	//  - handle instance (to private key)
 	//  - error if import failure (key empty, invalid, doesn't match keyType, unsupported keyType or storing key failed)
-	ImportPrivateKey(privKey interface{}, kt KeyType, opts ...PrivateKeyOpts) (string, interface{}, error)
+	ImportPrivateKey(privKey any, kt KeyType, opts ...PrivateKeyOpts) (string, any, error)
 }
 
 // Store defines the storage capability required by a KeyManager Provider.

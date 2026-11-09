@@ -112,7 +112,7 @@ var aeadAlg = map[EncAlg]ecdh.AEADAlg{ //nolint:gochecknoglobals
 }
 
 // Headers represents JOSE headers.
-type Headers map[string]interface{}
+type Headers map[string]any
 
 // KeyID gets Key ID from JOSE headers.
 func (h Headers) KeyID() (string, bool) {

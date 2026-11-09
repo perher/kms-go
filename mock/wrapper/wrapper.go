@@ -19,7 +19,7 @@ type MockKMSCrypto struct {
 	PubKeyType        kms.KeyType
 	PubKeyErr         error
 	CreateRawKID      string
-	CreateRawVal      interface{}
+	CreateRawVal      any
 	CreateErr         error
 	SignVal           []byte
 	SignErr           error
@@ -44,7 +44,7 @@ func (m *MockKMSCrypto) ExportPubKeyBytes(id string) ([]byte, kms.KeyType, error
 }
 
 // CreateRaw mock.
-func (m *MockKMSCrypto) CreateRaw(keyType kms.KeyType) (string, interface{}, error) {
+func (m *MockKMSCrypto) CreateRaw(keyType kms.KeyType) (string, any, error) {
 	return m.CreateRawKID, m.CreateRawVal, m.CreateErr
 }
 

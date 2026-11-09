@@ -153,7 +153,7 @@ func TestMergeSingleRecipientsHeadersFailureWithUnsetCurve(t *testing.T) {
 }
 
 func TestEmptyComputeAuthData(t *testing.T) {
-	protecteHeaders := new(map[string]interface{})
+	protecteHeaders := new(map[string]any)
 	aad := []byte("")
 	_, err := computeAuthData(*protecteHeaders, "", aad)
 	require.NoError(t, err, "computeAuthData with empty protectedHeaders and empty aad should not fail")

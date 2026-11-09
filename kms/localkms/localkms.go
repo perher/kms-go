@@ -101,7 +101,7 @@ func (l *LocalKMS) HealthCheck() error {
 //   - keyID of the handle
 //   - handle instance (to private key)
 //   - error if failure
-func (l *LocalKMS) Create(kt kmsapi.KeyType, opts ...kmsapi.KeyOpts) (string, interface{}, error) {
+func (l *LocalKMS) Create(kt kmsapi.KeyType, opts ...kmsapi.KeyOpts) (string, any, error) {
 	if kt == "" {
 		return "", nil, errors.New("failed to create new key, missing key type")
 	}
@@ -132,7 +132,7 @@ func (l *LocalKMS) Create(kt kmsapi.KeyType, opts ...kmsapi.KeyOpts) (string, in
 // Returns:
 //   - handle instance (to private key)
 //   - error if failure
-func (l *LocalKMS) Get(keyID string) (interface{}, error) {
+func (l *LocalKMS) Get(keyID string) (any, error) {
 	return l.getKeySet(keyID)
 }
 
@@ -151,7 +151,7 @@ func (l *LocalKMS) GetWithOpts(keyID string, opts ...kmsapi.ExportKeyOpts) (any,
 //   - new KeyID
 //   - handle instance (to private key)
 //   - error if failure
-func (l *LocalKMS) Rotate(kt kmsapi.KeyType, keyID string, opts ...kmsapi.KeyOpts) (string, interface{}, error) {
+func (l *LocalKMS) Rotate(kt kmsapi.KeyType, keyID string, opts ...kmsapi.KeyOpts) (string, any, error) {
 	keyOpts := kmsapi.NewKeyOpt()
 
 	for _, opt := range opts {
@@ -350,7 +350,7 @@ func (l *LocalKMS) CreateAndExportPubKeyBytes(kt kmsapi.KeyType, opts ...kmsapi.
 // it returns an error if it failed creating the key handle
 // Note: The key handle created is not stored in the KMS, it's only useful to execute the crypto primitive
 // associated with it.
-func (l *LocalKMS) PubKeyBytesToHandle(pubKey []byte, kt kmsapi.KeyType, opts ...kmsapi.KeyOpts) (interface{}, error) {
+func (l *LocalKMS) PubKeyBytesToHandle(pubKey []byte, kt kmsapi.KeyType, opts ...kmsapi.KeyOpts) (any, error) {
 	return PublicKeyBytesToHandle(pubKey, kt, opts...)
 }
 
@@ -364,8 +364,8 @@ func (l *LocalKMS) PubKeyBytesToHandle(pubKey []byte, kt kmsapi.KeyType, opts ..
 //   - keyID of the handle
 //   - handle instance (to private key)
 //   - error if import failure (key empty, invalid, doesn't match keyType, unsupported keyType or storing key failed)
-func (l *LocalKMS) ImportPrivateKey(privKey interface{}, kt kmsapi.KeyType,
-	opts ...kmsapi.PrivateKeyOpts) (string, interface{}, error) {
+func (l *LocalKMS) ImportPrivateKey(privKey any, kt kmsapi.KeyType,
+	opts ...kmsapi.PrivateKeyOpts) (string, any, error) {
 	switch pk := privKey.(type) {
 	case *ecdsa.PrivateKey:
 		return l.importECDSAKey(pk, kt, opts...)

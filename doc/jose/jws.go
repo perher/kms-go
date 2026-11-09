@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"maps"
 	"strings"
 
 	"github.com/go-jose/go-jose/v3/json"
@@ -167,13 +168,9 @@ func (s JSONWebSignature) Signature() []byte {
 func mergeHeaders(h1, h2 Headers) Headers {
 	h := make(Headers, len(h1)+len(h2))
 
-	for k, v := range h2 {
-		h[k] = v
-	}
+	maps.Copy(h, h2)
 
-	for k, v := range h1 {
-		h[k] = v
-	}
+	maps.Copy(h, h1)
 
 	return h
 }
@@ -338,7 +335,7 @@ func signingInput(headers Headers, header string, payload []byte) ([]byte, error
 		payloadStr = string(payload)
 	}
 
-	return []byte(fmt.Sprintf("%s.%s", headersStr, payloadStr)), nil
+	return fmt.Appendf(nil, "%s.%s", headersStr, payloadStr), nil
 }
 
 func checkJWSHeaders(headers Headers) error {
@@ -349,8 +346,8 @@ func checkJWSHeaders(headers Headers) error {
 	return nil
 }
 
-func convertMapToValue(vOriginToBeMap, vDest interface{}) error {
-	if _, ok := vOriginToBeMap.(map[string]interface{}); !ok {
+func convertMapToValue(vOriginToBeMap, vDest any) error {
+	if _, ok := vOriginToBeMap.(map[string]any); !ok {
 		return errors.New("expected value to be a map")
 	}
 

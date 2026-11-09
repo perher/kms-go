@@ -38,7 +38,7 @@ import (
 type mockKeyWrapperSupport struct {
 	getCurveVal     elliptic.Curve
 	getCurveErr     error
-	generateKeyVal  interface{}
+	generateKeyVal  any
 	generateKeyErr  error
 	createCipherVal cipher.Block
 	createCipherErr error
@@ -56,29 +56,29 @@ func (w *mockKeyWrapperSupport) getCurve(curve string) (elliptic.Curve, error) {
 	return w.getCurveVal, w.getCurveErr
 }
 
-func (w *mockKeyWrapperSupport) generateKey(curve elliptic.Curve) (interface{}, error) {
+func (w *mockKeyWrapperSupport) generateKey(curve elliptic.Curve) (any, error) {
 	return w.generateKeyVal, w.generateKeyErr
 }
 
-func (w *mockKeyWrapperSupport) createPrimitive(kek []byte) (interface{}, error) {
+func (w *mockKeyWrapperSupport) createPrimitive(kek []byte) (any, error) {
 	return w.createCipherVal, w.createCipherErr
 }
 
-func (w *mockKeyWrapperSupport) wrap(block interface{}, cek []byte) ([]byte, error) {
+func (w *mockKeyWrapperSupport) wrap(block any, cek []byte) ([]byte, error) {
 	return w.wrapVal, w.wrapErr
 }
 
-func (w *mockKeyWrapperSupport) unwrap(block interface{}, wrappedKey []byte) ([]byte, error) {
+func (w *mockKeyWrapperSupport) unwrap(block any, wrappedKey []byte) ([]byte, error) {
 	return w.unwrapVal, w.unwrapErr
 }
 
 func (w *mockKeyWrapperSupport) deriveSender1Pu(kwAlg string, apu, apv, tag []byte, epPriv, sePrivKey,
-	recPubKey interface{}, keySize int) ([]byte, error) {
+	recPubKey any, keySize int) ([]byte, error) {
 	return w.deriveSen1PuVal, w.deriveSen1PuErr
 }
 
 func (w *mockKeyWrapperSupport) deriveRecipient1Pu(kwAlg string, apu, apv, tag []byte, epPub, sePubKey,
-	rPrivKey interface{}, keySize int) ([]byte, error) {
+	rPrivKey any, keySize int) ([]byte, error) {
 	return w.deriveRec1PuVal, w.deriveRec1PuErr
 }
 

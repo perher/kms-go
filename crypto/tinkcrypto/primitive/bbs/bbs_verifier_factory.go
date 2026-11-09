@@ -85,7 +85,7 @@ func buildPrefixedMsgToSign(messages [][]byte, entry *primitiveset.Entry) [][]by
 	return messages
 }
 
-func toBBSVerifier(v interface{}) (bbsapi.Verifier, error) {
+func toBBSVerifier(v any) (bbsapi.Verifier, error) {
 	verifier, ok := v.(bbsapi.Verifier)
 	if !ok {
 		return nil, errInvalidPrimitive

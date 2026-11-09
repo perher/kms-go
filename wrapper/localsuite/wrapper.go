@@ -41,7 +41,7 @@ func (k *kmsCryptoImpl) Sign(msg []byte, pub *jwk.JWK) ([]byte, error) {
 	return k.cr.Sign(msg, kh)
 }
 
-func getKeyHandle(pub *jwk.JWK, keyManager keyHandleFetcher) (interface{}, error) {
+func getKeyHandle(pub *jwk.JWK, keyManager keyHandleFetcher) (any, error) {
 	var (
 		pkb []byte
 		kt  kms.KeyType
@@ -118,8 +118,8 @@ func makeFixedKeySigner(kms keyGetter, crypto signer, kid string) (api.FixedKeyS
 
 type fixedKeyImpl struct {
 	cr    signerVerifier
-	sigKH interface{}
-	verKH interface{}
+	sigKH any
+	verKH any
 }
 
 func (f *fixedKeyImpl) Sign(msg []byte) ([]byte, error) {

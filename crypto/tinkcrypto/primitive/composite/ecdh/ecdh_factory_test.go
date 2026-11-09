@@ -108,7 +108,7 @@ func TestECDHESFactory(t *testing.T) {
 		aadJSON, err := json.Marshal(aadRndNb)
 		require.NoError(t, err)
 
-		aad, err := json.Marshal(&map[string]interface{}{"someFiled": json.RawMessage(aadJSON)})
+		aad, err := json.Marshal(&map[string]any{"someFiled": json.RawMessage(aadJSON)})
 		require.NoError(t, err)
 
 		aadStr := base64.RawURLEncoding.EncodeToString(aad)

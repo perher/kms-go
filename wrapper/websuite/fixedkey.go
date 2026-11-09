@@ -27,7 +27,7 @@ func makeFixedKey(
 }
 
 type fixedKeyCrypto struct {
-	keyURL interface{}
+	keyURL any
 	cr     *webcrypto.RemoteCrypto
 }
 

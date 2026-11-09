@@ -49,7 +49,7 @@ func newX25519ECDHKWPrivateKeyManager() *x25519ECDHKWPrivateKeyManager {
 }
 
 // Primitive creates an ECDHESPrivateKey subtle for the given serialized ECDHESPrivateKey proto.
-func (km *x25519ECDHKWPrivateKeyManager) Primitive(serializedKey []byte) (interface{}, error) {
+func (km *x25519ECDHKWPrivateKeyManager) Primitive(serializedKey []byte) (any, error) {
 	if len(serializedKey) == 0 {
 		return nil, errInvalidx25519ECDHKWPrivateKey
 	}

@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"time"
 
 	"golang.org/x/crypto/nacl/box"
@@ -118,7 +117,7 @@ func (b *CryptoBox) Easy(payload, nonce, theirPub []byte, myKID string) ([]byte,
 		return nil, err
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read ciphertext response for Easy failed [%s, %w]", destination, err)
 	}
@@ -170,7 +169,7 @@ func (b *CryptoBox) EasyOpen(cipherText, nonce, theirPub, myPub []byte) ([]byte,
 		return nil, err
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read plaintext response for EasyOpen failed [%s, %w]", destination, err)
 	}
@@ -252,7 +251,7 @@ func (b *CryptoBox) SealOpen(cipherText, myPub []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read plaintext response for SealOpen failed [%s, %w]", destination, err)
 	}

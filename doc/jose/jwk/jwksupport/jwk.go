@@ -39,7 +39,7 @@ const (
 // JWKFromKey creates a JWK from an opaque key struct.
 // It's e.g. *ecdsa.PublicKey, *ecdsa.PrivateKey, ed25519.VerificationMethod, *bbs12381g2pub.PrivateKey or
 // *bbs12381g2pub.PublicKey.
-func JWKFromKey(opaqueKey interface{}) (*jwk.JWK, error) {
+func JWKFromKey(opaqueKey any) (*jwk.JWK, error) {
 	key := &jwk.JWK{
 		JSONWebKey: jose.JSONWebKey{
 			Key: opaqueKey,
@@ -63,7 +63,7 @@ func JWKFromKey(opaqueKey interface{}) (*jwk.JWK, error) {
 // PubKeyBytesToKey creates an opaque key struct from the given public key bytes.
 // It's e.g. *ecdsa.PublicKey, *ecdsa.PrivateKey, ed25519.VerificationMethod, *bbs12381g2pub.PrivateKey or
 // *bbs12381g2pub.PublicKey.
-func PubKeyBytesToKey(bytes []byte, keyType kms.KeyType) (interface{}, error) { // nolint:gocyclo,funlen
+func PubKeyBytesToKey(bytes []byte, keyType kms.KeyType) (any, error) { // nolint:gocyclo,funlen
 	switch keyType {
 	case kms.ED25519Type:
 		return ed25519.PublicKey(bytes), nil

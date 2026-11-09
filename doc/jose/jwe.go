@@ -82,7 +82,7 @@ type rawJSONWebEncryption struct {
 	B64Tag                   string          `json:"tag,omitempty"`
 }
 
-type marshalFunc func(interface{}) ([]byte, error)
+type marshalFunc func(any) ([]byte, error)
 
 // FullSerialize serializes the given JWE into JSON as defined in https://tools.ietf.org/html/rfc7516#section-7.2.
 // The full serialization syntax is used. If there is only one recipient, then the flattened syntax is used.

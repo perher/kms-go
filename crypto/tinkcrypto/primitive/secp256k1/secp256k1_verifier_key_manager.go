@@ -39,7 +39,7 @@ func newSecp256K1VerifierKeyManager() *secp256k1VerifierKeyManager {
 }
 
 // Primitive creates an secp256k1Verifier subtle for the given serialized secp256k1PublicKey proto.
-func (km *secp256k1VerifierKeyManager) Primitive(serializedKey []byte) (interface{}, error) {
+func (km *secp256k1VerifierKeyManager) Primitive(serializedKey []byte) (any, error) {
 	if len(serializedKey) == 0 {
 		return nil, errInvalidsecp256k1VerifierKey
 	}

@@ -61,7 +61,7 @@ func newAESCBCHMACAEADKeyManager() *aesCBCHMACAEADKeyManager {
 }
 
 // Primitive creates an AEAD for the given serialized AESCBCHMACAEADKey proto.
-func (km *aesCBCHMACAEADKeyManager) Primitive(serializedKey []byte) (interface{}, error) {
+func (km *aesCBCHMACAEADKeyManager) Primitive(serializedKey []byte) (any, error) {
 	if len(serializedKey) == 0 {
 		return nil, errInvalidAESCBCHMACAEADKey
 	}

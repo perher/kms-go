@@ -42,7 +42,7 @@ func newECDHNISTPAESPublicKeyManager() *nistPECDHKWPublicKeyManager {
 }
 
 // Primitive creates an ECDHESPublicKey subtle for the given serialized ECDHESPublicKey proto.
-func (km *nistPECDHKWPublicKeyManager) Primitive(serializedKey []byte) (interface{}, error) {
+func (km *nistPECDHKWPublicKeyManager) Primitive(serializedKey []byte) (any, error) {
 	if len(serializedKey) == 0 {
 		return nil, errInvalidNISTPECDHKWPublicKey
 	}

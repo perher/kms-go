@@ -46,7 +46,7 @@ func (k *kmsCryptoSignerImpl) FixedKeySigner(pub *jwk.JWK) (api.FixedKeySigner, 
 
 type fixedKeySignerImpl struct {
 	cr signer
-	kh interface{}
+	kh any
 }
 
 func (f *fixedKeySignerImpl) Sign(msg []byte) ([]byte, error) {

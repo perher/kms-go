@@ -29,13 +29,13 @@ import (
 
 type keyWrapper interface {
 	getCurve(curve string) (elliptic.Curve, error)
-	generateKey(curve elliptic.Curve) (interface{}, error)
-	createPrimitive(key []byte) (interface{}, error)
-	wrap(blockPrimitive interface{}, cek []byte) ([]byte, error)
-	unwrap(blockPrimitive interface{}, encryptedKey []byte) ([]byte, error)
-	deriveSender1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPriv, senderPrivKey, recPubKey interface{},
+	generateKey(curve elliptic.Curve) (any, error)
+	createPrimitive(key []byte) (any, error)
+	wrap(blockPrimitive any, cek []byte) ([]byte, error)
+	unwrap(blockPrimitive any, encryptedKey []byte) ([]byte, error)
+	deriveSender1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPriv, senderPrivKey, recPubKey any,
 		keySize int) ([]byte, error)
-	deriveRecipient1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPub, senderPubKey, recPrivKey interface{},
+	deriveRecipient1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPub, senderPubKey, recPrivKey any,
 		keySize int) ([]byte, error)
 }
 
@@ -45,15 +45,15 @@ func (w *ecKWSupport) getCurve(curve string) (elliptic.Curve, error) {
 	return hybrid.GetCurve(curve)
 }
 
-func (w *ecKWSupport) generateKey(curve elliptic.Curve) (interface{}, error) {
+func (w *ecKWSupport) generateKey(curve elliptic.Curve) (any, error) {
 	return ecdsa.GenerateKey(curve, rand.Reader)
 }
 
-func (w *ecKWSupport) createPrimitive(kek []byte) (interface{}, error) {
+func (w *ecKWSupport) createPrimitive(kek []byte) (any, error) {
 	return aes.NewCipher(kek)
 }
 
-func (w *ecKWSupport) wrap(block interface{}, cek []byte) ([]byte, error) {
+func (w *ecKWSupport) wrap(block any, cek []byte) ([]byte, error) {
 	blockCipher, ok := block.(cipher.Block)
 	if !ok {
 		return nil, errors.New("wrap support: EC wrap with invalid cipher block type")
@@ -62,7 +62,7 @@ func (w *ecKWSupport) wrap(block interface{}, cek []byte) ([]byte, error) {
 	return josecipher.KeyWrap(blockCipher, cek)
 }
 
-func (w *ecKWSupport) unwrap(block interface{}, encryptedKey []byte) ([]byte, error) {
+func (w *ecKWSupport) unwrap(block any, encryptedKey []byte) ([]byte, error) {
 	blockCipher, ok := block.(cipher.Block)
 	if !ok {
 		return nil, errors.New("unwrap support: EC wrap with invalid cipher block type")
@@ -71,8 +71,8 @@ func (w *ecKWSupport) unwrap(block interface{}, encryptedKey []byte) ([]byte, er
 	return josecipher.KeyUnwrap(blockCipher, encryptedKey)
 }
 
-func (w *ecKWSupport) deriveSender1Pu(alg string, apu, apv, tag []byte, ephemeralPriv, senderPrivKey interface{},
-	recPubKey interface{}, keySize int) ([]byte, error) {
+func (w *ecKWSupport) deriveSender1Pu(alg string, apu, apv, tag []byte, ephemeralPriv, senderPrivKey any,
+	recPubKey any, keySize int) ([]byte, error) {
 	ephemeralPrivEC, ok := ephemeralPriv.(*ecdsa.PrivateKey)
 	if !ok {
 		return nil, errors.New("deriveSender1Pu: ephemeral key not ECDSA type")
@@ -98,8 +98,8 @@ func (w *ecKWSupport) deriveSender1Pu(alg string, apu, apv, tag []byte, ephemera
 	return derive1Pu(alg, ze, zs, apu, apv, tag, keySize), nil
 }
 
-func (w *ecKWSupport) deriveRecipient1Pu(alg string, apu, apv, tag []byte, ephemeralPub, senderPubKey interface{},
-	recPrivKey interface{}, keySize int) ([]byte, error) {
+func (w *ecKWSupport) deriveRecipient1Pu(alg string, apu, apv, tag []byte, ephemeralPub, senderPubKey any,
+	recPrivKey any, keySize int) ([]byte, error) {
 	ephemeralPubEC, ok := ephemeralPub.(*ecdsa.PublicKey)
 	if !ok {
 		return nil, errors.New("deriveRecipient1Pu: ephemeral key not ECDSA type")
@@ -175,7 +175,7 @@ func (o *okpKWSupport) getCurve(curve string) (elliptic.Curve, error) {
 	return nil, errors.New("getCurve: not implemented for OKP KW support")
 }
 
-func (o *okpKWSupport) generateKey(_ elliptic.Curve) (interface{}, error) {
+func (o *okpKWSupport) generateKey(_ elliptic.Curve) (any, error) {
 	newKey := make([]byte, cryptoutil.Curve25519KeySize)
 
 	_, err := rand.Read(newKey)
@@ -186,7 +186,7 @@ func (o *okpKWSupport) generateKey(_ elliptic.Curve) (interface{}, error) {
 	return newKey, nil
 }
 
-func (o *okpKWSupport) createPrimitive(kek []byte) (interface{}, error) {
+func (o *okpKWSupport) createPrimitive(kek []byte) (any, error) {
 	p, err := chacha20poly1305.NewX(kek)
 	if err != nil {
 		return nil, fmt.Errorf("createPrimitive: failed to create OKP primitive: %w", err)
@@ -195,7 +195,7 @@ func (o *okpKWSupport) createPrimitive(kek []byte) (interface{}, error) {
 	return p, nil
 }
 
-func (o *okpKWSupport) wrap(aead interface{}, cek []byte) ([]byte, error) {
+func (o *okpKWSupport) wrap(aead any, cek []byte) ([]byte, error) {
 	aeadPrimitive, ok := aead.(cipher.AEAD)
 	if !ok {
 		return nil, errors.New("wrap support: OKP wrap with invalid primitive type")
@@ -214,7 +214,7 @@ func (o *okpKWSupport) wrap(aead interface{}, cek []byte) ([]byte, error) {
 	return append(nonce, cipherText...), nil
 }
 
-func (o *okpKWSupport) unwrap(aead interface{}, encryptedKey []byte) ([]byte, error) {
+func (o *okpKWSupport) unwrap(aead any, encryptedKey []byte) ([]byte, error) {
 	aeadPrimitive, ok := aead.(cipher.AEAD)
 	if !ok {
 		return nil, errors.New("unwrap support: OKP unwrap with invalid primitive type")
@@ -234,8 +234,8 @@ func (o *okpKWSupport) unwrap(aead interface{}, encryptedKey []byte) ([]byte, er
 	return cek, nil
 }
 
-func (o *okpKWSupport) deriveSender1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPriv, senderPrivKey interface{},
-	recPubKey interface{}, _ int) ([]byte, error) {
+func (o *okpKWSupport) deriveSender1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPriv, senderPrivKey any,
+	recPubKey any, _ int) ([]byte, error) {
 	ephemeralPrivOKP, ok := ephemeralPriv.([]byte)
 	if !ok {
 		return nil, errors.New("deriveSender1Pu: ephemeral key not OKP type")
@@ -273,8 +273,8 @@ func (o *okpKWSupport) deriveSender1Pu(kwAlg string, apu, apv, tag []byte, ephem
 	return derive1Pu(kwAlg, ze, zs, apu, apv, tag, chacha20poly1305.KeySize), nil
 }
 
-func (o *okpKWSupport) deriveRecipient1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPub, senderPubKey interface{},
-	recPrivKey interface{}, _ int) ([]byte, error) {
+func (o *okpKWSupport) deriveRecipient1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPub, senderPubKey any,
+	recPrivKey any, _ int) ([]byte, error) {
 	ephemeralPubOKP, ok := ephemeralPub.([]byte)
 	if !ok {
 		return nil, errors.New("deriveRecipient1Pu: ephemeral key not OKP type")

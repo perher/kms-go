@@ -365,7 +365,7 @@ func TestPubKeyBytesToKey(t *testing.T) {
 	tt := []struct {
 		keyTypes   []kms.KeyType
 		getKey     func(keyType kms.KeyType) ([]byte, error)
-		expectType interface{}
+		expectType any
 	}{
 		{
 			keyTypes: []kms.KeyType{kms.ED25519Type},

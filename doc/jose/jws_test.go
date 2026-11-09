@@ -274,6 +274,6 @@ func (v testVerifier) Verify(_ Headers, _, _, _ []byte) error {
 	return v.err
 }
 
-func getUnmarshallableMap() map[string]interface{} {
-	return map[string]interface{}{"alg": "JWS", "error": map[chan int]interface{}{make(chan int): 6}}
+func getUnmarshallableMap() map[string]any {
+	return map[string]any{"alg": "JWS", "error": map[chan int]any{make(chan int): 6}}
 }

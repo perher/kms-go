@@ -46,7 +46,7 @@ func newECDHNISTPAESPrivateKeyManager() *nistPECDHKWPrivateKeyManager {
 }
 
 // Primitive creates an ECDHESPrivateKey subtle for the given serialized ECDHESPrivateKey proto.
-func (km *nistPECDHKWPrivateKeyManager) Primitive(serializedKey []byte) (interface{}, error) {
+func (km *nistPECDHKWPrivateKeyManager) Primitive(serializedKey []byte) (any, error) {
 	if len(serializedKey) == 0 {
 		return nil, errInvalidNISTPECDHKWPrivateKey
 	}

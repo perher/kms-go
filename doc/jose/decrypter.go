@@ -347,11 +347,11 @@ func buildEncryptedData(jwe *JSONWebEncryption) ([]byte, error) {
 }
 
 // extractRecipientHeaders will extract RecipientHeaders from headers argument.
-func extractRecipientHeaders(headers map[string]interface{}) (*RecipientHeaders, error) {
+func extractRecipientHeaders(headers map[string]any) (*RecipientHeaders, error) {
 	// Since headers is a generic map, epk value is converted to a generic map by Serialize(), ie we lose RawMessage
 	// type of epk. We need to convert epk value (generic map) to marshaled json so we can call RawMessage.Unmarshal()
 	// to get the original epk value (RawMessage type).
-	mapData, ok := headers[HeaderEPK].(map[string]interface{})
+	mapData, ok := headers[HeaderEPK].(map[string]any)
 	if !ok {
 		return nil, fmt.Errorf("JSON value is not a map (%#v)", headers[HeaderEPK])
 	}

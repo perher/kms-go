@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 package crypto
 
 type wrapKeyOpts struct {
-	senderKey  interface{}
+	senderKey  any
 	useXC20PKW bool
 	tag        []byte
 	epk        *PrivateKey
@@ -23,7 +23,7 @@ func NewOpt() *wrapKeyOpts { // nolint // unexported type doesn't need to be use
 // SenderKey gets the Sender key to be used for key wrapping using a sender key (authcrypt).
 // Not to be used directly. It's intended for implementations of Crypto interface.
 // Use WithSender() option function below instead.
-func (pk *wrapKeyOpts) SenderKey() interface{} {
+func (pk *wrapKeyOpts) SenderKey() any {
 	return pk.senderKey
 }
 
@@ -52,7 +52,7 @@ type WrapKeyOpts func(opts *wrapKeyOpts)
 //   - *keyset.Handle (requires private key handle for crypto.WrapKey())
 //   - *crypto.PublicKey (available for UnwrapKey() only)
 //   - *ecdsa.PublicKey (available for UnwrapKey() only)
-func WithSender(senderKey interface{}) WrapKeyOpts {
+func WithSender(senderKey any) WrapKeyOpts {
 	return func(opts *wrapKeyOpts) {
 		opts.senderKey = senderKey
 	}

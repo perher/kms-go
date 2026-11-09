@@ -65,7 +65,7 @@ func New() (*Crypto, error) {
 }
 
 // Encrypt will encrypt msg using the implementation's corresponding encryption key and primitive in kh of a public key.
-func (t *Crypto) Encrypt(msg, aad []byte, kh interface{}) ([]byte, []byte, error) {
+func (t *Crypto) Encrypt(msg, aad []byte, kh any) ([]byte, []byte, error) {
 	keyHandle, ok := kh.(*keyset.Handle)
 	if !ok {
 		return nil, nil, errBadKeyHandleFormat
@@ -116,7 +116,7 @@ func nonceSize(ps *primitiveset.PrimitiveSet) int {
 
 // Decrypt will decrypt cipher using the implementation's corresponding encryption key referenced by kh of
 // a private key.
-func (t *Crypto) Decrypt(cipher, aad, nonce []byte, kh interface{}) ([]byte, error) {
+func (t *Crypto) Decrypt(cipher, aad, nonce []byte, kh any) ([]byte, error) {
 	keyHandle, ok := kh.(*keyset.Handle)
 	if !ok {
 		return nil, errBadKeyHandleFormat
@@ -150,7 +150,7 @@ func (t *Crypto) Decrypt(cipher, aad, nonce []byte, kh interface{}) ([]byte, err
 }
 
 // Sign will sign msg using the implementation's corresponding signing key referenced by kh of a private key.
-func (t *Crypto) Sign(msg []byte, kh interface{}) ([]byte, error) {
+func (t *Crypto) Sign(msg []byte, kh any) ([]byte, error) {
 	keyHandle, ok := kh.(*keyset.Handle)
 	if !ok {
 		return nil, errBadKeyHandleFormat
@@ -171,7 +171,7 @@ func (t *Crypto) Sign(msg []byte, kh interface{}) ([]byte, error) {
 
 // Verify will verify sig signature of msg using the implementation's corresponding signing key referenced by kh of
 // a public key.
-func (t *Crypto) Verify(sig, msg []byte, kh interface{}) error {
+func (t *Crypto) Verify(sig, msg []byte, kh any) error {
 	keyHandle, ok := kh.(*keyset.Handle)
 	if !ok {
 		return errBadKeyHandleFormat
@@ -192,7 +192,7 @@ func (t *Crypto) Verify(sig, msg []byte, kh interface{}) error {
 
 // ComputeMAC computes message authentication code (MAC) for code data
 // using a matching MAC primitive in kh key handle.
-func (t *Crypto) ComputeMAC(data []byte, kh interface{}) ([]byte, error) {
+func (t *Crypto) ComputeMAC(data []byte, kh any) ([]byte, error) {
 	keyHandle, ok := kh.(*keyset.Handle)
 	if !ok {
 		return nil, errBadKeyHandleFormat
@@ -208,7 +208,7 @@ func (t *Crypto) ComputeMAC(data []byte, kh interface{}) ([]byte, error) {
 
 // VerifyMAC determines if mac is a correct authentication code (MAC) for data
 // using a matching MAC primitive in kh key handle and returns nil if so, otherwise it returns an error.
-func (t *Crypto) VerifyMAC(macBytes, data []byte, kh interface{}) error {
+func (t *Crypto) VerifyMAC(macBytes, data []byte, kh any) error {
 	keyHandle, ok := kh.(*keyset.Handle)
 	if !ok {
 		return errBadKeyHandleFormat
@@ -295,7 +295,7 @@ func (t *Crypto) WrapKey(cek, apu, apv []byte, recPubKey *crypto.PublicKey,
 //	curved keys. Unwrapping a key with non matching types/curves will result in unwrapping failure.
 //
 // 4- recipientKH must contain the private key since unwrapping is usually done on the recipient side.
-func (t *Crypto) UnwrapKey(recWK *crypto.RecipientWrappedKey, recipientKH interface{},
+func (t *Crypto) UnwrapKey(recWK *crypto.RecipientWrappedKey, recipientKH any,
 	wrapKeyOpts ...crypto.WrapKeyOpts) ([]byte, error) {
 	if recWK == nil {
 		return nil, errors.New("unwrapKey: RecipientWrappedKey is empty")
@@ -321,7 +321,7 @@ func (t *Crypto) UnwrapKey(recWK *crypto.RecipientWrappedKey, recipientKH interf
 //
 //	signature in []byte
 //	error in case of errors
-func (t *Crypto) SignMulti(messages [][]byte, signerKH interface{}) ([]byte, error) {
+func (t *Crypto) SignMulti(messages [][]byte, signerKH any) ([]byte, error) {
 	keyHandle, ok := signerKH.(*keyset.Handle)
 	if !ok {
 		return nil, errBadKeyHandleFormat
@@ -344,7 +344,7 @@ func (t *Crypto) SignMulti(messages [][]byte, signerKH interface{}) ([]byte, err
 // returns:
 //
 //	error in case of errors or nil if signature verification was successful
-func (t *Crypto) VerifyMulti(messages [][]byte, bbsSignature []byte, signerPubKH interface{}) error {
+func (t *Crypto) VerifyMulti(messages [][]byte, bbsSignature []byte, signerPubKH any) error {
 	keyHandle, ok := signerPubKH.(*keyset.Handle)
 	if !ok {
 		return errBadKeyHandleFormat
@@ -368,7 +368,7 @@ func (t *Crypto) VerifyMulti(messages [][]byte, bbsSignature []byte, signerPubKH
 // returns:
 //
 //	error in case of errors or nil if signature proof verification was successful
-func (t *Crypto) VerifyProof(revealedMessages [][]byte, proof, nonce []byte, signerPubKH interface{}) error {
+func (t *Crypto) VerifyProof(revealedMessages [][]byte, proof, nonce []byte, signerPubKH any) error {
 	keyHandle, ok := signerPubKH.(*keyset.Handle)
 	if !ok {
 		return errBadKeyHandleFormat
@@ -394,7 +394,7 @@ func (t *Crypto) VerifyProof(revealedMessages [][]byte, proof, nonce []byte, sig
 //	signature proof in []byte
 //	error in case of errors
 func (t *Crypto) DeriveProof(messages [][]byte, bbsSignature, nonce []byte, revealedIndexes []int,
-	signerPubKH interface{}) ([]byte, error) {
+	signerPubKH any) ([]byte, error) {
 	keyHandle, ok := signerPubKH.(*keyset.Handle)
 	if !ok {
 		return nil, errBadKeyHandleFormat

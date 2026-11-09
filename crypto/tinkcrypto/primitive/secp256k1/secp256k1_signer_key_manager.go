@@ -43,7 +43,7 @@ func newSecp256K2SignerKeyManager() *secp256k1SignerKeyManager {
 }
 
 // Primitive creates an ECDSASign subtle for the given serialized ECDSAPrivateKey proto.
-func (km *secp256k1SignerKeyManager) Primitive(serializedKey []byte) (interface{}, error) {
+func (km *secp256k1SignerKeyManager) Primitive(serializedKey []byte) (any, error) {
 	if len(serializedKey) == 0 {
 		return nil, errInvalidSECP256K1SignKey
 	}
