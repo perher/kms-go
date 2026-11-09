@@ -75,7 +75,6 @@ func TestNewKeyMultipleTimes(t *testing.T) {
 func TestNewKeyWithCorruptedFormat(t *testing.T) {
 	keyTemplate := new(tinkpb.KeyTemplate)
 
-	keyTemplate.TypeUrl = AESCBCHMACAEADTypeURL
 	keyTemplate.Value = make([]byte, 128)
 
 	keyManager, err := registry.GetKeyManager(AESCBCHMACAEADTypeURL)

@@ -236,16 +236,16 @@ type mockNONCEInCBCHMAC struct {
 
 // Encrypt using the mocked nonce instead of generating a random one.
 func (a *mockNONCEInCBCHMAC) Encrypt(plaintext, additionalData []byte) ([]byte, error) {
-	AESCBCIVSize := 16
+	aesCBCIVSize := 16
 
 	ciphertext := a.cbcHMAC.Seal(nil, a.nonce, plaintext, additionalData)
 
-	ciphertextAndIV := make([]byte, AESCBCIVSize+len(ciphertext))
-	if n := copy(ciphertextAndIV, a.nonce); n != AESCBCIVSize {
-		return nil, fmt.Errorf("aes_cbc_hmac: failed to copy IV (copied %d/%d bytes)", n, AESCBCIVSize)
+	ciphertextAndIV := make([]byte, aesCBCIVSize+len(ciphertext))
+	if n := copy(ciphertextAndIV, a.nonce); n != aesCBCIVSize {
+		return nil, fmt.Errorf("aes_cbc_hmac: failed to copy IV (copied %d/%d bytes)", n, aesCBCIVSize)
 	}
 
-	copy(ciphertextAndIV[AESCBCIVSize:], ciphertext)
+	copy(ciphertextAndIV[aesCBCIVSize:], ciphertext)
 
 	return ciphertextAndIV, nil
 }

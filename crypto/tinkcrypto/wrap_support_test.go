@@ -93,13 +93,13 @@ func Test_okpKWSupportFailures(t *testing.T) {
 	kekBytes, ok := kek.([]byte)
 	require.True(t, ok)
 
-	XC20PPrimitive, err := okpKW.createPrimitive(kekBytes)
+	xc20pPrimitive, err := okpKW.createPrimitive(kekBytes)
 	require.NoError(t, err)
 
-	_, err = okpKW.unwrap(XC20PPrimitive, []byte(""))
+	_, err = okpKW.unwrap(xc20pPrimitive, []byte(""))
 	require.EqualError(t, err, "unwrap support: OKP unwrap invalid key")
 
-	_, err = okpKW.unwrap(XC20PPrimitive, []byte("badEncryptedKeyLargerThankNonceSize"))
+	_, err = okpKW.unwrap(xc20pPrimitive, []byte("badEncryptedKeyLargerThankNonceSize"))
 	require.EqualError(t, err, "unwrap support: OKP failed to unwrap key: chacha20poly1305: message authentication failed")
 
 	_, err = okpKW.deriveSender1Pu("", nil, nil, nil, "badEphemeralPrivKeyType", nil, nil, 0)
