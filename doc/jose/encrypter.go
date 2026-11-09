@@ -606,7 +606,7 @@ func (je *JWEEncrypt) buildAPUAPV() ([]byte, []byte, error) {
 
 	apvList := []byte(strings.Join(recKIDs, "."))
 	apv32 := sha256.Sum256(apvList)
-	apv := make([]byte, 32)
+	apv := make([]byte, sha256.Size)
 	copy(apv, apv32[:])
 
 	return apu, apv, nil

@@ -134,10 +134,6 @@ func deriveECDH(priv *ecdsa.PrivateKey, pub *ecdsa.PublicKey, size int) []byte {
 		panic("ECDH-ES output size too large, must be less than or equal to 1<<16")
 	}
 
-	// suppPubInfo is the encoded length of the output size in bits
-	supPubInfo := make([]byte, 4)
-	binary.BigEndian.PutUint32(supPubInfo, uint32(size)*byteSize)
-
 	if !priv.IsOnCurve(pub.X, pub.Y) {
 		panic("public key not on same curve as private key")
 	}

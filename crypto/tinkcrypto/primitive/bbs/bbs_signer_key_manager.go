@@ -24,6 +24,7 @@ import (
 
 const (
 	bbsSignerKeyVersion = 0
+	bbsKeySeedSize      = 32
 	bbsSignerKeyTypeURL = "type.hyperledger.org/hyperledger.aries.crypto.tink.BBSPrivateKey"
 )
 
@@ -89,7 +90,7 @@ func (km *bbsSignerKeyManager) NewKey(serializedKeyFormat []byte) (proto.Message
 	// Since bbs+ in aries-framework-go only supports BLS12-381 curve on G2, we create keys of this curve and
 	// group only. BBS+ keys with other curves/group field can be added later if needed.
 	if keyFormat.Params.Group == bbspb.GroupField_G2 && keyFormat.Params.Curve == bbspb.BBSCurveType_BLS12_381 {
-		seed := make([]byte, 32)
+		seed := make([]byte, bbsKeySeedSize)
 
 		_, err = rand.Read(seed)
 		if err != nil {
