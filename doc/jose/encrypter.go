@@ -564,22 +564,24 @@ func (je *JWEEncrypt) useNISTPKW() bool {
 }
 
 func (je *JWEEncrypt) newCEK() []byte {
-	twoKeys := 2
-	defKeySize := 32
+	const (
+		twoKeys    = 2
+		defKeySize = 32
+	)
 
 	switch je.encAlg {
 	case A256GCM, XC20P:
-		return random.GetRandomBytes(uint32(defKeySize))
+		return random.GetRandomBytes(defKeySize)
 	case A128CBCHS256:
-		return random.GetRandomBytes(uint32(subtle.AES128Size * twoKeys)) // cek: 32 bytes.
+		return random.GetRandomBytes(subtle.AES128Size * twoKeys) // cek: 32 bytes.
 	case A192CBCHS384:
-		return random.GetRandomBytes(uint32(subtle.AES192Size * twoKeys)) // cek: 48 bytes.
+		return random.GetRandomBytes(subtle.AES192Size * twoKeys) // cek: 48 bytes.
 	case A256CBCHS384:
-		return random.GetRandomBytes(uint32(subtle.AES256Size + subtle.AES192Size)) // cek: 56 bytes.
+		return random.GetRandomBytes(subtle.AES256Size + subtle.AES192Size) // cek: 56 bytes.
 	case A256CBCHS512:
-		return random.GetRandomBytes(uint32(subtle.AES256Size * twoKeys)) // cek: 64 bytes.
+		return random.GetRandomBytes(subtle.AES256Size * twoKeys) // cek: 64 bytes.
 	default:
-		return random.GetRandomBytes(uint32(defKeySize)) // default cek: 32 bytes.
+		return random.GetRandomBytes(defKeySize) // default cek: 32 bytes.
 	}
 }
 

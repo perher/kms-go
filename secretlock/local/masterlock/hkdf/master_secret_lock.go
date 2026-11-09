@@ -87,7 +87,7 @@ func NewMasterLock(passphrase string, h func() hash.Hash, salt []byte) (secretlo
 //
 //	(keyURI is used for remote locks, it is ignored by this implementation)
 func (m *masterLockHKDF) Encrypt(keyURI string, req *secretlock.EncryptRequest) (*secretlock.EncryptResponse, error) {
-	nonce := random.GetRandomBytes(uint32(m.aead.NonceSize()))
+	nonce := random.GetRandomBytes(uint32(m.aead.NonceSize())) //nolint:gosec // G115: AES-GCM nonce size is 12
 	ct := m.aead.Seal(nil, nonce, []byte(req.Plaintext), []byte(req.AdditionalAuthenticatedData))
 	ct = append(nonce, ct...)
 
@@ -104,7 +104,7 @@ func (m *masterLockHKDF) Decrypt(keyURI string, req *secretlock.DecryptRequest) 
 		return nil, err
 	}
 
-	nonceSize := uint32(m.aead.NonceSize())
+	nonceSize := uint32(m.aead.NonceSize()) //nolint:gosec // G115: AES-GCM nonce size is 12
 
 	// ensure ciphertext contains more than nonce+ciphertext (result from Encrypt())
 	if len(ct) <= int(nonceSize) {

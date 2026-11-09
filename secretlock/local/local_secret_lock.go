@@ -112,7 +112,7 @@ func NewService(masterKeyReader io.Reader, secLock secretlock.Service) (secretlo
 // Encrypt a key in req using master key in the local secret lock service
 // (keyURI is used for remote locks, it is ignored by this implementation).
 func (s *Lock) Encrypt(keyURI string, req *secretlock.EncryptRequest) (*secretlock.EncryptResponse, error) {
-	nonce := random.GetRandomBytes(uint32(s.aead.NonceSize()))
+	nonce := random.GetRandomBytes(uint32(s.aead.NonceSize())) //nolint:gosec // G115: AES-GCM nonce size is 12
 	ct := s.aead.Seal(nil, nonce, []byte(req.Plaintext), []byte(req.AdditionalAuthenticatedData))
 	ct = append(nonce, ct...)
 
@@ -129,7 +129,7 @@ func (s *Lock) Decrypt(keyURI string, req *secretlock.DecryptRequest) (*secretlo
 		return nil, err
 	}
 
-	nonceSize := uint32(s.aead.NonceSize())
+	nonceSize := uint32(s.aead.NonceSize()) //nolint:gosec // G115: AES-GCM nonce size is 12
 
 	// ensure ciphertext contains more than nonce+ciphertext (result from Encrypt())
 	if len(ct) <= int(nonceSize) {
