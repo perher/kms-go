@@ -34,6 +34,8 @@ import (
 )
 
 func TestDecodeJWK(t *testing.T) {
+	t.Parallel()
+
 	t.Run("Test decode public key success", func(t *testing.T) {
 		tests := []struct {
 			name    string
@@ -627,6 +629,8 @@ func TestPubKeyBytesToJWK(t *testing.T) {
 	for _, test := range tests {
 		tc := test
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			switch tc.keyType {
 			case kms.ED25519Type:
 				pubKey, _, err := ed25519.GenerateKey(rand.Reader)

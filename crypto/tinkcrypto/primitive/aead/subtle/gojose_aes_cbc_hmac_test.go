@@ -193,6 +193,8 @@ func TestIETFTestVector(t *testing.T) {
 	for _, test := range tests {
 		tc := test
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			cbcHMAC, err := josecipher.NewCBCHMAC(tc.key, aes.NewCipher)
 			require.NoError(t, err)
 

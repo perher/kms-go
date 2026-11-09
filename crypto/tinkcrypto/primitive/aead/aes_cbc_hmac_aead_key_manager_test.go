@@ -432,6 +432,8 @@ func TestPrimitiveIETFTestVector(t *testing.T) {
 	for _, test := range tests {
 		tc := test
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			key := &aeadpb.AesCbcHmacAeadKey{
 				Version: 0,
 				AesCbcKey: &aescbcpb.AesCbcKey{

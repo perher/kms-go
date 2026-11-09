@@ -115,6 +115,8 @@ func TestCipherGettersFailures(t *testing.T) {
 	for _, tt := range tests {
 		tc := tt
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			c := &tinkpb.KeyTemplate{
 				TypeUrl:          tc.typeURL,
 				Value:            []byte("bad serialized key"),
