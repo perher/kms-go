@@ -58,7 +58,7 @@ func asn1decode(b []byte) (*Secp256k1Signature, error) {
 func ieeeSignatureSize(curveName string) (int, error) {
 	switch curveName {
 	case btcec.S256().Params().Name:
-		return 64, nil //nolint:gomnd
+		return 64, nil //nolint:mnd
 	default:
 		return 0, fmt.Errorf("ieeeP1363 unsupported curve name: %q", curveName)
 	}
