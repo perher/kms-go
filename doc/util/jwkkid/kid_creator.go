@@ -146,9 +146,15 @@ func newFixedSizeBuffer(data []byte, length int) *byteBuffer {
 		panic("newFixedSizeBuffer: invalid call to newFixedSizeBuffer (len(data) > length)")
 	}
 
-	pad := make([]byte, length-len(data))
+	return newBuffer(leftPad(data, length))
+}
 
-	return newBuffer(append(pad, data...))
+// leftPad returns data left-padded with zero bytes to size bytes. len(data) must not exceed size.
+func leftPad(data []byte, size int) []byte {
+	padded := make([]byte, size)
+	copy(padded[size-len(data):], data)
+
+	return padded
 }
 
 // Get size of curve in bytes.
@@ -216,8 +222,7 @@ func buildX25519JWK(keyBytes []byte) (string, error) {
 		return "", errors.New("buildX25519JWK: invalid ECDH X25519 key")
 	}
 
-	pad := make([]byte, cryptoutil.Curve25519KeySize-lenKey)
-	x25519RawKey := append(pad, keyBytes...)
+	x25519RawKey := leftPad(keyBytes, cryptoutil.Curve25519KeySize)
 
 	j := fmt.Sprintf(x25519ThumbprintTemplate, base64.RawURLEncoding.EncodeToString(x25519RawKey))
 
@@ -237,8 +242,7 @@ func createBLS12381G2KID(keyBytes []byte) (string, error) {
 		return "", errors.New("invalid BBS+ key")
 	}
 
-	pad := make([]byte, bls12381G2PublicKeyLen-lenKey)
-	bbsRawKey := append(pad, keyBytes...)
+	bbsRawKey := leftPad(keyBytes, bls12381G2PublicKeyLen)
 
 	j := fmt.Sprintf(bls12381g2ThumbprintTemplate, base64.RawURLEncoding.EncodeToString(bbsRawKey))
 

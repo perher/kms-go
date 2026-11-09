@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"testing"
 
 	"github.com/google/tink/go/aead"
@@ -215,8 +216,7 @@ func (m *MockEncHelper) BuildDecData(encData *composite.EncryptedData) []byte {
 	iv := encData.IV
 	tag := encData.Tag
 	ct := encData.Ciphertext
-	finalCT := append(iv, ct...)
-	finalCT = append(finalCT, tag...)
+	finalCT := slices.Concat(iv, ct, tag)
 
 	return finalCT
 }

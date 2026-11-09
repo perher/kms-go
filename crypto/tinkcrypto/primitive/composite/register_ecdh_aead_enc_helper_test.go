@@ -10,6 +10,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"testing"
 
 	"github.com/golang/protobuf/proto"
@@ -204,8 +205,7 @@ func TestBuildEncDecData(t *testing.T) {
 		Tag:        random.GetRandomBytes(uint32(rEnc.GetTagSize())),
 	}
 
-	preBuiltCT := append(refEncData.IV, refEncData.Ciphertext...)
-	preBuiltCT = append(preBuiltCT, refEncData.Tag...)
+	preBuiltCT := slices.Concat(refEncData.IV, refEncData.Ciphertext, refEncData.Tag)
 
 	// test BuildDecData
 	finalCT := rEnc.BuildDecData(refEncData)

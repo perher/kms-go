@@ -563,10 +563,11 @@ func (b byteBuffer) bigInt() *big.Int {
 }
 
 func newFixedSizeBuffer(data []byte, length int) *byteBuffer {
-	paddedData := make([]byte, length-len(data))
+	paddedData := make([]byte, length)
+	copy(paddedData[length-len(data):], data)
 
 	return &byteBuffer{
-		data: append(paddedData, data...),
+		data: paddedData,
 	}
 }
 

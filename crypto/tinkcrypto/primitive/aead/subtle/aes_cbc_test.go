@@ -11,6 +11,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"slices"
 	"testing"
 
 	josecipher "github.com/go-jose/go-jose/v3/cipher"
@@ -282,7 +283,7 @@ func TestPadUnpad(t *testing.T) {
 	unpaddedCT := subtle.Unpad(paddedCT)
 	require.EqualValues(t, ciphertext, unpaddedCT)
 
-	newCiphertext := append(ciphertext, byte(0))
+	newCiphertext := slices.Concat(ciphertext, []byte{0})
 	for i := 1; i < 3*aes.BlockSize+1; i++ {
 		paddedCT = subtle.Pad(newCiphertext, len(newCiphertext), aes.BlockSize)
 		unpaddedCT = subtle.Unpad(paddedCT)

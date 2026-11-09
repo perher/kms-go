@@ -17,6 +17,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"slices"
 
 	josecipher "github.com/go-jose/go-jose/v3/cipher"
 	hybrid "github.com/google/tink/go/hybrid/subtle"
@@ -207,7 +208,7 @@ func (o *okpKWSupport) wrap(aead any, cek []byte) ([]byte, error) {
 
 	cipherText := aeadPrimitive.Seal(nil, nonce, cek, nil)
 
-	return append(nonce, cipherText...), nil
+	return slices.Concat(nonce, cipherText), nil
 }
 
 func (o *okpKWSupport) unwrap(aead any, encryptedKey []byte) ([]byte, error) {
@@ -324,9 +325,6 @@ func kdfWithTag(kwAlg string, z, apu, apv, tag []byte, keySize int, useTag bool)
 	ptyUInfo := cryptoutil.LengthPrefix(apu)
 	ptyVInfo := cryptoutil.LengthPrefix(apv)
 
-	supPubLen := 4
-	supPubInfo := make([]byte, supPubLen)
-
 	byteLen := 8
 	kdfKeySize := keySize
 
@@ -339,7 +337,7 @@ func kdfWithTag(kwAlg string, z, apu, apv, tag []byte, keySize int, useTag bool)
 		kdfKeySize = subtle.AES256Size
 	}
 
-	binary.BigEndian.PutUint32(supPubInfo, uint32(kdfKeySize)*uint32(byteLen))
+	supPubInfo := binary.BigEndian.AppendUint32(nil, uint32(kdfKeySize)*uint32(byteLen))
 
 	if useTag {
 		// append Tag to SuppPubInfo as described here:

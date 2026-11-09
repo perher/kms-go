@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 
 	aead "github.com/google/tink/go/aead/subtle"
 	"github.com/google/tink/go/core/registry"
@@ -325,8 +326,7 @@ func (r *RegisterCompositeAEADEncHelper) BuildDecData(encData *EncryptedData) []
 	iv := encData.IV
 	tag := encData.Tag
 	ct := encData.Ciphertext
-	finalCT := append(iv, ct...)
-	finalCT = append(finalCT, tag...)
+	finalCT := slices.Concat(iv, ct, tag)
 
 	return finalCT
 }

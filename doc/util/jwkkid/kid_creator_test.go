@@ -328,8 +328,7 @@ func createED25519KID(t *testing.T, keyBytes []byte) string {
 
 	require.True(t, lenKey <= ed25519.PublicKeySize, "createED25519KID: invalid Ed25519 key")
 
-	pad := make([]byte, ed25519.PublicKeySize-lenKey)
-	ed25519RawKey := append(pad, keyBytes...)
+	ed25519RawKey := leftPad(keyBytes, ed25519.PublicKeySize)
 
 	j := fmt.Sprintf(ed25519ThumbprintTemplate, base64.RawURLEncoding.EncodeToString(ed25519RawKey))
 
