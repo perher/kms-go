@@ -38,6 +38,9 @@ import (
 	cryptoapi "github.com/trustbloc/kms-go/spi/crypto"
 )
 
+// okpKty is the JWK key type of X25519 (OKP) keys.
+const okpKty = "OKP"
+
 // EncAlg represents the JWE content encryption algorithm.
 type EncAlg string
 
@@ -358,7 +361,7 @@ func (je *JWEEncrypt) encodeAPUAPV(kek *cryptoapi.RecipientWrappedKey) {
 func (je *JWEEncrypt) getWrapKeyOpts(tag []byte, epk *cryptoapi.PrivateKey) []cryptoapi.WrapKeyOpts {
 	var wrapOpts []cryptoapi.WrapKeyOpts
 
-	if je.recipientsKeys[0].Type == "OKP" {
+	if je.recipientsKeys[0].Type == okpKty {
 		wrapOpts = append(wrapOpts, cryptoapi.WithXC20PKW())
 	}
 
@@ -695,7 +698,7 @@ func (je *JWEEncrypt) newEPK(cek []byte) (*cryptoapi.PrivateKey, string, error) 
 		if err != nil {
 			return nil, "", fmt.Errorf("newEPK: %w", err)
 		}
-	case "OKP":
+	case okpKty:
 		epk, kwAlg, err = je.okpEPKAndAlg()
 		if err != nil {
 			return nil, "", fmt.Errorf("newEPK: %w", err)
@@ -761,7 +764,7 @@ func (je *JWEEncrypt) okpEPKAndAlg() (*cryptoapi.PrivateKey, string, error) {
 
 	epk := &cryptoapi.PrivateKey{
 		PublicKey: cryptoapi.PublicKey{
-			Type:  "OKP",
+			Type:  okpKty,
 			Curve: "X25519",
 			X:     ephemeralPubKey,
 		},

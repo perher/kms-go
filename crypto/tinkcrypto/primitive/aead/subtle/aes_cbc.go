@@ -129,7 +129,7 @@ func Pad(text []byte, originalTextSize, blockSize int) []byte {
 	// pad to block size if needed. The value of missing is between 0 and blockSize.
 	missing := blockSize - (originalTextSize % blockSize)
 	if missing > 0 {
-		text = append(text, bytes.Repeat([]byte{byte(missing)}, missing)...)
+		text = append(text, bytes.Repeat([]byte{byte(missing)}, missing)...) //nolint:gosec // missing is at most blockSize (16 for AES)
 
 		return text
 	}

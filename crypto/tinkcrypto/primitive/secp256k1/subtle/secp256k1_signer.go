@@ -34,7 +34,7 @@ func NewSecp256K1Signer(hashAlg string,
 	c := GetCurve(curve)
 	privKey.Curve = c
 	privKey.D = new(big.Int).SetBytes(keyValue)
-	privKey.X, privKey.Y = c.ScalarBaseMult(keyValue)
+	privKey.X, privKey.Y = c.ScalarBaseMult(keyValue) //nolint:staticcheck // secp256k1 curve: crypto/ecdh has no secp256k1
 
 	return NewSecp256K1SignerFromPrivateKey(hashAlg, encoding, privKey)
 }
