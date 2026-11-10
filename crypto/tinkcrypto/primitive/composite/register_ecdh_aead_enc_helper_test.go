@@ -22,7 +22,6 @@ import (
 	"github.com/google/tink/go/subtle/random"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/chacha20poly1305"
-	"golang.org/x/crypto/poly1305"
 
 	cbchmacaead "github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/aead"
 	subtlecbchmacaead "github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/aead/subtle"
@@ -75,10 +74,10 @@ func TestCipherGetters(t *testing.T) {
 			require.EqualValues(t, subtleaead.AESGCMTagSize, rDem.GetTagSize())
 		case ChaCha20Poly1305TypeURL:
 			require.EqualValues(t, chacha20poly1305.NonceSize, rDem.GetIVSize())
-			require.EqualValues(t, poly1305.TagSize, rDem.GetTagSize())
+			require.EqualValues(t, chacha20poly1305.Overhead, rDem.GetTagSize())
 		case XChaCha20Poly1305TypeURL:
 			require.EqualValues(t, chacha20poly1305.NonceSizeX, rDem.GetIVSize())
-			require.EqualValues(t, poly1305.TagSize, rDem.GetTagSize())
+			require.EqualValues(t, chacha20poly1305.Overhead, rDem.GetTagSize())
 		}
 	}
 }
