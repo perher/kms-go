@@ -9,7 +9,7 @@ package secp256k1_test
 import (
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	"github.com/google/tink/go/core/registry"
 	commonpb "github.com/google/tink/go/proto/common_go_proto"
 	"github.com/google/tink/go/testutil"

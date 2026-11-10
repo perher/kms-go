@@ -414,7 +414,7 @@ func TestPubKeyBytesToKey(t *testing.T) {
 					return nil, err
 				}
 
-				keyBytes := elliptic.Marshal(crv, privKey.X, privKey.Y)
+				keyBytes := elliptic.Marshal(crv, privKey.X, privKey.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 				return keyBytes, nil
 			},
 			expectType: &ecdsa.PublicKey{},
@@ -661,7 +661,7 @@ func TestPubKeyBytesToJWK(t *testing.T) {
 				privKey, err := ecdsa.GenerateKey(crv, rand.Reader)
 				require.NoError(t, err)
 
-				keyBytes := elliptic.Marshal(crv, privKey.X, privKey.Y)
+				keyBytes := elliptic.Marshal(crv, privKey.X, privKey.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 
 				jwkKey, err := PubKeyBytesToJWK(keyBytes, tc.keyType)
 				require.NoError(t, err)
@@ -895,7 +895,7 @@ type PublicKeyInfo struct {
 }
 
 func marshalSecp256k1DER(pub *ecdsa.PublicKey) ([]byte, error) {
-	publicKeyBytes := elliptic.Marshal(pub.Curve, pub.X, pub.Y)
+	publicKeyBytes := elliptic.Marshal(pub.Curve, pub.X, pub.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 
 	pki := PublicKeyInfo{
 		Algorithm: pkix.AlgorithmIdentifier{

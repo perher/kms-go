@@ -37,7 +37,7 @@ func LengthPrefix(array []byte) []byte {
 	const prefixLen = 4
 
 	arrInfo := make([]byte, prefixLen+len(array))
-	binary.BigEndian.PutUint32(arrInfo, uint32(len(array)))
+	binary.BigEndian.PutUint32(arrInfo, uint32(len(array))) //nolint:gosec // inputs are short protocol fields, far below 4 GiB
 	copy(arrInfo[prefixLen:], array)
 
 	return arrInfo

@@ -155,7 +155,7 @@ func CreateKeyStore(httpClient HTTPClient, keyserverURL, controller, vaultURL st
 		return "", nil, fmt.Errorf("failed to marshal Create keystore request [%s, %w]", destination, err)
 	}
 
-	httpReq, err := http.NewRequest(http.MethodPost, destination, bytes.NewBuffer(mReq))
+	httpReq, err := http.NewRequest(http.MethodPost, destination, bytes.NewBuffer(mReq)) //nolint:noctx // the public API takes no context.Context yet
 	if err != nil {
 		return "", nil, fmt.Errorf("build request for Create keystore error: %w", err)
 	}
@@ -234,12 +234,12 @@ func (r *RemoteKMS) doHTTPRequest(method, destination string, mReq []byte) (*htt
 	)
 
 	if mReq != nil {
-		httpReq, err = http.NewRequest(method, destination, bytes.NewBuffer(mReq))
+		httpReq, err = http.NewRequest(method, destination, bytes.NewBuffer(mReq)) //nolint:noctx // the public API takes no context.Context yet
 		if err != nil {
 			return nil, fmt.Errorf("build post request error: %w", err)
 		}
 	} else {
-		httpReq, err = http.NewRequest(method, destination, nil)
+		httpReq, err = http.NewRequest(method, destination, nil) //nolint:noctx // the public API takes no context.Context yet
 		if err != nil {
 			return nil, fmt.Errorf("build get request error: %w", err)
 		}

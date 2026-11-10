@@ -62,7 +62,7 @@ func (s *KMSSigner) textToLines(txt string) [][]byte {
 
 // KeyTypeToJWA provides the JWA corresponding to keyType.
 func KeyTypeToJWA(keyType kms.KeyType) string {
-	switch keyType {
+	switch keyType { //nolint:exhaustive // other key types have no JWA name
 	case kms.ECDSAP256IEEEP1363, kms.ECDSAP256DER:
 		return p256Alg
 	case kms.ECDSAP384IEEEP1363, kms.ECDSAP384DER:

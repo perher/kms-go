@@ -13,7 +13,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	"github.com/google/tink/go/aead"
 	subtleaead "github.com/google/tink/go/aead/subtle"
 	"github.com/google/tink/go/mac"

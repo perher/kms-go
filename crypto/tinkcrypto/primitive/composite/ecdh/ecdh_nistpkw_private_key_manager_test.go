@@ -137,7 +137,7 @@ func TestECDHNISTPAESPrivateKeyManager_Primitive(t *testing.T) {
 
 			crv, err := hybrid.GetCurve(c.String())
 			require.NoError(t, err)
-			d, x, y, err := elliptic.GenerateKey(crv, rand.Reader)
+			d, x, y, err := elliptic.GenerateKey(crv, rand.Reader) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 			require.NoError(t, err)
 
 			// set back curvType if it was unknown to proceed with the test

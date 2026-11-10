@@ -66,7 +66,8 @@ func newWrappedVerifier(ps *primitiveset.PrimitiveSet) (*wrappedVerifier, error)
 var errInvalidSignature = errors.New("verifier_factory: invalid signature")
 
 // Verify checks whether the given signature is a valid signature of the given data.
-// nolint:gocyclo
+//
+//nolint:gocyclo,gocognit // refactor is risky; split when next changing this code
 func (v *wrappedVerifier) Verify(signature, data []byte) error {
 	prefixSize := cryptofmt.NonRawPrefixSize
 	if len(signature) < prefixSize {

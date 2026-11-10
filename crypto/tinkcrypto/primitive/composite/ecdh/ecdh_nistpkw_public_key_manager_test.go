@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	"github.com/google/tink/go/aead"
 	hybrid "github.com/google/tink/go/hybrid/subtle"
 	gcmpb "github.com/google/tink/go/proto/aes_gcm_go_proto"
@@ -129,7 +129,7 @@ func TestECDHNISTPAESPublicKeyManager_Primitive(t *testing.T) {
 
 			crv, err := hybrid.GetCurve(c.String())
 			require.NoError(t, err)
-			_, x, y, err := elliptic.GenerateKey(crv, rand.Reader)
+			_, x, y, err := elliptic.GenerateKey(crv, rand.Reader) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 			require.NoError(t, err)
 
 			// set back curvType if it was unknown to proceed with the test

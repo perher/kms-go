@@ -30,7 +30,7 @@ type AESCBC struct {
 // The key argument should be the AES key, either 16, 24 or 32 bytes to select
 // AES-128, AES-192 or AES-256.
 func NewAESCBC(key []byte) (*AESCBC, error) {
-	keySize := uint32(len(key))
+	keySize := uint32(len(key)) //nolint:gosec // key sizes are tiny; overflow would need a 4 GiB key
 	if err := ValidateAESKeySize(keySize); err != nil {
 		return nil, fmt.Errorf("aes_cbc: NewAESCBC() %w", err)
 	}

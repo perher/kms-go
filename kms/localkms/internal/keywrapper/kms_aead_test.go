@@ -60,6 +60,7 @@ func TestLocalKMS_New_AEAD(t *testing.T) {
 	}
 }
 
+//nolint:gocognit // test with many sub-cases
 func TestLocalKMS_EncryptDecrypt(t *testing.T) {
 	flagTests := []struct {
 		tcName    string

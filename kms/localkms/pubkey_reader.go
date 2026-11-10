@@ -13,7 +13,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	"github.com/google/tink/go/insecurecleartextkeyset"
 	"github.com/google/tink/go/keyset"
 	commonpb "github.com/google/tink/go/proto/common_go_proto"
@@ -77,7 +77,7 @@ func newKeySet(tURL string, marshalledKey []byte, keyMaterialType tinkpb.KeyData
 	}
 }
 
-//nolint:funlen,gocyclo
+//nolint:funlen,gocyclo,gocognit // refactor is risky; split when next changing this code
 func getMarshalledProtoKeyAndKeyURL(pubKey []byte, kt kms.KeyType,
 	opts ...kms.KeyOpts) ([]byte, string, error) {
 	var (
@@ -276,7 +276,7 @@ func getMarshalledECDSAIEEEP1363Key(marshaledPubKey []byte, curveName string, c 
 		return nil, errors.New("undefined curve")
 	}
 
-	x, y := elliptic.Unmarshal(curve, marshaledPubKey)
+	x, y := elliptic.Unmarshal(curve, marshaledPubKey) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 
 	if x == nil || y == nil {
 		return nil, errors.New("failed to unamrshal public ecdsa key")
@@ -298,7 +298,7 @@ func getMarshalledECDSASecp256K1IEEEP1363Key(marshaledPubKey []byte, curveName s
 		return nil, errors.New("undefined curve")
 	}
 
-	x, y := elliptic.Unmarshal(curve, marshaledPubKey)
+	x, y := elliptic.Unmarshal(curve, marshaledPubKey) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 
 	if x == nil || y == nil {
 		return nil, errors.New("failed to unamrshal public ecdsa key")

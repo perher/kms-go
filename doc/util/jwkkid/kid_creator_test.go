@@ -78,7 +78,7 @@ func Test_CreateKID(t *testing.T) {
 		secp256k1Key, err := ecdsa.GenerateKey(btcec.S256(), rand.Reader)
 		require.NoError(t, err)
 
-		pubECKeyBytes := elliptic.Marshal(secp256k1Key.Curve, secp256k1Key.X, secp256k1Key.Y)
+		pubECKeyBytes := elliptic.Marshal(secp256k1Key.Curve, secp256k1Key.X, secp256k1Key.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 		require.NoError(t, err)
 
 		kid, err = CreateKID(pubECKeyBytes, kms.ECDSASecp256k1DER)
@@ -92,7 +92,7 @@ func Test_CreateKID(t *testing.T) {
 		secp256k1Key, err := ecdsa.GenerateKey(btcec.S256(), rand.Reader)
 		require.NoError(t, err)
 
-		pubECKeyBytes := elliptic.Marshal(secp256k1Key.Curve, secp256k1Key.X, secp256k1Key.Y)
+		pubECKeyBytes := elliptic.Marshal(secp256k1Key.Curve, secp256k1Key.X, secp256k1Key.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 		require.NoError(t, err)
 
 		kid, err = CreateKID(pubECKeyBytes, kms.ECDSASecp256k1IEEEP1363)
@@ -115,7 +115,7 @@ func TestCreateKID(t *testing.T) {
 	_, err = CreateKID(nil, kms.ED25519Type)
 	require.EqualError(t, err, "createKID: empty key")
 
-	_, x, y, err := elliptic.GenerateKey(elliptic.P256(), rand.Reader)
+	_, x, y, err := elliptic.GenerateKey(elliptic.P256(), rand.Reader) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 	require.NoError(t, err)
 
 	ecdhKey := &cryptoapi.PublicKey{
@@ -157,7 +157,7 @@ func TestCreateKID(t *testing.T) {
 	ecKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	require.NoError(t, err)
 
-	ecKeyBytes := elliptic.Marshal(elliptic.P256(), ecKey.X, ecKey.Y)
+	ecKeyBytes := elliptic.Marshal(elliptic.P256(), ecKey.X, ecKey.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 	_, err = CreateKID(ecKeyBytes, kms.ECDSAP256TypeIEEEP1363)
 	require.NoError(t, err)
 
@@ -302,7 +302,7 @@ func TestCreateSecp256K1KID(t *testing.T) {
 	secp256k1Key, err := ecdsa.GenerateKey(btcec.S256(), rand.Reader)
 	require.NoError(t, err)
 
-	pubKeyBytes := elliptic.Marshal(secp256k1Key.Curve, secp256k1Key.X, secp256k1Key.Y)
+	pubKeyBytes := elliptic.Marshal(secp256k1Key.Curve, secp256k1Key.X, secp256k1Key.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 
 	t.Run("create kid for secp256k1 in DER format", func(t *testing.T) {
 		t.Skipf("Secp256k1 keys are not DER compliant")

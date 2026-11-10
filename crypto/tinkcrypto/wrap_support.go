@@ -231,6 +231,7 @@ func (o *okpKWSupport) unwrap(aead any, encryptedKey []byte) ([]byte, error) {
 	return cek, nil
 }
 
+//nolint:dupl // sender and recipient 1PU derivations mirror each other
 func (o *okpKWSupport) deriveSender1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPriv, senderPrivKey any,
 	recPubKey any, _ int) ([]byte, error) {
 	ephemeralPrivOKP, ok := ephemeralPriv.([]byte)
@@ -270,6 +271,7 @@ func (o *okpKWSupport) deriveSender1Pu(kwAlg string, apu, apv, tag []byte, ephem
 	return derive1Pu(kwAlg, ze, zs, apu, apv, tag, chacha20poly1305.KeySize), nil
 }
 
+//nolint:dupl // sender and recipient 1PU derivations mirror each other
 func (o *okpKWSupport) deriveRecipient1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPub, senderPubKey any,
 	recPrivKey any, _ int) ([]byte, error) {
 	ephemeralPubOKP, ok := ephemeralPub.([]byte)
@@ -337,7 +339,7 @@ func kdfWithTag(kwAlg string, z, apu, apv, tag []byte, keySize int, useTag bool)
 		kdfKeySize = subtle.AES256Size
 	}
 
-	supPubInfo := binary.BigEndian.AppendUint32(nil, uint32(kdfKeySize)*uint32(byteLen))
+	supPubInfo := binary.BigEndian.AppendUint32(nil, uint32(kdfKeySize)*uint32(byteLen)) //nolint:gosec // kdfKeySize is 16, 24 or 32
 
 	if useTag {
 		// append Tag to SuppPubInfo as described here:

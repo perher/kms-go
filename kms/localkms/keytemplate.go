@@ -9,7 +9,7 @@ package localkms
 import (
 	"fmt"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	"github.com/google/tink/go/aead"
 	"github.com/google/tink/go/mac"
 	commonpb "github.com/google/tink/go/proto/common_go_proto"

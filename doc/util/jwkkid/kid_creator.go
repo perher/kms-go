@@ -40,7 +40,7 @@ func CreateKID(keyBytes []byte, kt kms.KeyType) (string, error) {
 		return "", errors.New("createKID: empty key")
 	}
 
-	switch kt {
+	switch kt { //nolint:exhaustive // other key types go through BuildJWK below
 	case kms.X25519ECDHKWType: // X25519 JWK is not supported by go jose, manually build it and build its resulting KID.
 		x25519KID, err := createX25519KID(keyBytes)
 		if err != nil {

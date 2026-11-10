@@ -73,7 +73,7 @@ func PubKeyBytesToKey(bytes []byte, keyType kms.KeyType) (any, error) { // nolin
 		return bbs12381g2pub.UnmarshalPublicKey(bytes)
 	case kms.ECDSAP256TypeIEEEP1363, kms.ECDSAP384TypeIEEEP1363, kms.ECDSAP521TypeIEEEP1363:
 		crv := getECDSACurve(keyType)
-		x, y := elliptic.Unmarshal(crv, bytes)
+		x, y := elliptic.Unmarshal(crv, bytes) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 
 		return &ecdsa.PublicKey{
 			Curve: crv,
@@ -187,7 +187,7 @@ func PubKeyBytesToJWK(bytes []byte, keyType kms.KeyType) (*jwk.JWK, error) {
 }
 
 func getECDSACurve(keyType kms.KeyType) elliptic.Curve {
-	switch keyType {
+	switch keyType { //nolint:exhaustive // non-EC key types return nil
 	case kms.ECDSAP256TypeIEEEP1363, kms.ECDSAP256TypeDER, kms.NISTP256ECDHKWType:
 		return elliptic.P256()
 	case kms.ECDSAP384TypeIEEEP1363, kms.ECDSAP384TypeDER, kms.NISTP384ECDHKWType:

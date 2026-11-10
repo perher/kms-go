@@ -45,7 +45,7 @@ var keyTypeCodecs = map[kms.KeyType]uint64{
 
 // BuildDIDKeyByKeyType creates a did key for pubKeyBytes based on the kms keyType.
 func BuildDIDKeyByKeyType(pubKeyBytes []byte, keyType kms.KeyType) (string, error) {
-	switch keyType {
+	switch keyType { //nolint:exhaustive // other key types are encoded as is
 	case kms.X25519ECDHKW:
 		pubKey := &cryptoapi.PublicKey{}
 
@@ -197,11 +197,11 @@ func unmarshalECKey(ecCRV elliptic.Curve, pubKey []byte) (string, []byte, []byte
 
 		// need to marshal pubKey in uncompressed format for CreateKID() call in EncryptionPubKeyFromDIDKey above since
 		// did:key uses compressed elliptic format.
-		pubKey = elliptic.Marshal(ecCRV, xBig, yBig)
+		pubKey = elliptic.Marshal(ecCRV, xBig, yBig) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 	} else { // try normal Unmarshal if compressed returned nil xBig and yBig.
 		// add compression byte for uncompressed key, comment of fingerprint.PubKeyFromDIDKey().
 		pubKey = append([]byte{4}, pubKey...)
-		xBig, yBig = elliptic.Unmarshal(ecCRV, pubKey)
+		xBig, yBig = elliptic.Unmarshal(ecCRV, pubKey) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 
 		x = xBig.Bytes()
 		y = yBig.Bytes()

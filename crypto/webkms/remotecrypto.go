@@ -204,7 +204,7 @@ func (r *RemoteCrypto) doHTTPRequest(method, destination string, mReq []byte) (*
 		body = bytes.NewBuffer(mReq)
 	}
 
-	httpReq, err := http.NewRequest(method, destination, body)
+	httpReq, err := http.NewRequest(method, destination, body) //nolint:noctx // the public API takes no context.Context yet
 	if err != nil {
 		return nil, fmt.Errorf("build request error: %w", err)
 	}
@@ -336,6 +336,8 @@ func (r *RemoteCrypto) Decrypt(cipher, aad, nonce []byte, keyURL any) ([]byte, e
 //
 //	signature in []byte
 //	error in case of errors
+//
+//nolint:dupl // single- and multi-message variants of the same remote call
 func (r *RemoteCrypto) Sign(msg []byte, keyURL any) ([]byte, error) {
 	startSign := time.Now()
 	destination := fmt.Sprintf("%s", keyURL) + signURI
@@ -680,6 +682,8 @@ func ksToCryptoPublicKey(ks any) (*cryptoapi.PublicKey, error) {
 //
 //	signature in []byte
 //	error in case of errors
+//
+//nolint:dupl // single- and multi-message variants of the same remote call
 func (r *RemoteCrypto) SignMulti(messages [][]byte, signerKeyURL any) ([]byte, error) {
 	startSign := time.Now()
 	destination := fmt.Sprintf("%s", signerKeyURL) + signMultiURI

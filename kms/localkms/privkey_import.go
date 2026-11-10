@@ -13,7 +13,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	"github.com/google/tink/go/keyset"
 	commonpb "github.com/google/tink/go/proto/common_go_proto"
 	ecdsapb "github.com/google/tink/go/proto/ecdsa_go_proto"
@@ -129,7 +129,7 @@ func (l *LocalKMS) buildAndImportECDSAPrivateKeyAsECDHKW(privKey *ecdsa.PrivateK
 	opts ...kms.PrivateKeyOpts) (string, *keyset.Handle, error) {
 	var keyTemplate *tinkpb.KeyTemplate
 
-	switch kt {
+	switch kt { //nolint:exhaustive // the only caller passes NIST ECDH-KW key types
 	case kms.NISTP256ECDHKWType:
 		keyTemplate = ecdh.NISTP256ECDHKWKeyTemplate()
 	case kms.NISTP384ECDHKWType:

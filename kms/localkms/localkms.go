@@ -170,7 +170,7 @@ func (l *LocalKMS) Rotate(kt kmsapi.KeyType, keyID string, opts ...kmsapi.KeyOpt
 
 	km := keyset.NewManagerFromHandle(kh)
 
-	err = km.Rotate(keyTemplate)
+	err = km.Rotate(keyTemplate) //nolint:staticcheck // LocalKMS.Rotate is documented to promote the new key
 	if err != nil {
 		return "", nil, fmt.Errorf("rotate: failed to call Tink's keyManager rotate: %w", err)
 	}

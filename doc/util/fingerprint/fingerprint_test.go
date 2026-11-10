@@ -138,8 +138,8 @@ func TestCreateDIDKey(t *testing.T) {
 			pubKey, err := PubKeyFromDIDKey(tc.DIDKey)
 			if tc.crv != nil {
 				mKeyCompressed := append([]byte{4}, pubKey...)
-				x, y := elliptic.Unmarshal(tc.crv, mKeyCompressed)
-				mKey := elliptic.Marshal(tc.crv, x, y)
+				x, y := elliptic.Unmarshal(tc.crv, mKeyCompressed) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
+				mKey := elliptic.Marshal(tc.crv, x, y)             //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 				require.EqualValues(t, mKeyCompressed, mKey)
 			}
 
