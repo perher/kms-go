@@ -63,7 +63,7 @@ func TestJWEEncryptRoundTrip(t *testing.T) {
 		"NewJWEEncrypt should fail with empty recipientPubKeys")
 
 	singleRecipientNISTPKWError := "jwedecrypt: failed to unwrap cek: [unwrapKey: deriveKEKAndUnwrap:" +
-		" failed to AES unwrap key: go-jose/go-jose: key wrap input must be 8 byte blocks]"
+		" failed to AES unwrap key: go-jose/go-jose: JWE Encrypted Key too short]"
 
 	singleRecipientX25519KWError := "jwedecrypt: failed to unwrap cek: [unwrapKey: deriveKEKAndUnwrap: failed to XC20P " +
 		"unwrap key: unwrap support: OKP unwrap invalid key]"
