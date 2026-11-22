@@ -931,7 +931,7 @@ type failingMarshaller struct {
 	numTimesMarshalCalledBeforeReturnErr int
 }
 
-func (m *failingMarshaller) failingMarshal(v interface{}) ([]byte, error) {
+func (m *failingMarshaller) failingMarshal(v any) ([]byte, error) {
 	if m.numTimesMarshalCalled == m.numTimesMarshalCalledBeforeReturnErr {
 		return nil, errFailingMarshal
 	}

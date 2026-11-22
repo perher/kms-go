@@ -143,7 +143,7 @@ func (je *JWEEncrypt) Encrypt(plaintext []byte) (*JSONWebEncryption, error) {
 
 // EncryptWithAuthData encrypt plaintext with AAD and returns a JSONWebEncryption instance to serialize a JWE instance.
 func (je *JWEEncrypt) EncryptWithAuthData(plaintext, aad []byte) (*JSONWebEncryption, error) {
-	protectedHeaders := map[string]interface{}{
+	protectedHeaders := map[string]any{
 		HeaderEncryption: je.encAlg,
 		HeaderType:       je.encTyp,
 	}
@@ -171,7 +171,7 @@ func (je *JWEEncrypt) EncryptWithAuthData(plaintext, aad []byte) (*JSONWebEncryp
 	return je.encrypt(protectedHeaders, encPrimitive, plaintext, authData, cek, aad)
 }
 
-func (je *JWEEncrypt) encrypt(protectedHeaders map[string]interface{}, encPrimitive api.CompositeEncrypt,
+func (je *JWEEncrypt) encrypt(protectedHeaders map[string]any, encPrimitive api.CompositeEncrypt,
 	plaintext, authData, cek, aad []byte) (*JSONWebEncryption, error) {
 	recipients, singleRecipientHeaderADDs, err := je.wrapCEKForRecipients(cek, []byte{}, []byte{}, authData, json.Marshal)
 	if err != nil {
@@ -248,7 +248,7 @@ func (je *JWEEncrypt) encryptWithSender(primitive api.CompositeEncrypt,
 }
 
 func getJSONWebEncryption(encData *composite.EncryptedData, recipientsHeaders []*Recipient,
-	protectedHeaders map[string]interface{}, aad []byte) *JSONWebEncryption {
+	protectedHeaders map[string]any, aad []byte) *JSONWebEncryption {
 	return &JSONWebEncryption{
 		IV:               string(encData.IV),
 		Tag:              string(encData.Tag),
@@ -468,7 +468,7 @@ func addKDFHeaders(rawHeaders map[string]json.RawMessage, recipientWK *cryptoapi
 	return nil
 }
 
-func mergeRecipientHeaders(headers map[string]interface{}, recHeaders *RecipientHeaders) {
+func mergeRecipientHeaders(headers map[string]any, recHeaders *RecipientHeaders) {
 	headers[HeaderAlgorithm] = recHeaders.Alg
 	if recHeaders.KID != "" {
 		headers[HeaderKeyID] = recHeaders.KID
@@ -532,7 +532,7 @@ func (je *JWEEncrypt) buildRecs(recWKs []*cryptoapi.RecipientWrappedKey,
 	return recipients, singleRecipientHeaders, nil
 }
 
-func (je *JWEEncrypt) addExtraProtectedHeaders(protectedHeaders map[string]interface{}) {
+func (je *JWEEncrypt) addExtraProtectedHeaders(protectedHeaders map[string]any) {
 	// set cty if it's not empty
 	if je.cty != "" {
 		protectedHeaders[HeaderContentType] = je.cty
@@ -613,7 +613,7 @@ func (je *JWEEncrypt) buildAPUAPV() ([]byte, []byte, error) {
 }
 
 func (je *JWEEncrypt) generateEPKAndUpdateAuthDataFor1PU(auth,
-	cek, apu, apv []byte) (*cryptoapi.PrivateKey, []byte, map[string]interface{}, error) {
+	cek, apu, apv []byte) (*cryptoapi.PrivateKey, []byte, map[string]any, error) {
 	var epk *cryptoapi.PrivateKey
 
 	// generate an EPK based on the first recipient.
@@ -633,13 +633,13 @@ func (je *JWEEncrypt) generateEPKAndUpdateAuthDataFor1PU(auth,
 }
 
 func (je *JWEEncrypt) buildCommonAuthData(aadIndex int, kwAlg, authData string, auth, apu, apv []byte,
-	epk *cryptoapi.PrivateKey) (*cryptoapi.PrivateKey, []byte, map[string]interface{}, error) {
+	epk *cryptoapi.PrivateKey) (*cryptoapi.PrivateKey, []byte, map[string]any, error) {
 	authDataBytes, err := base64.RawURLEncoding.DecodeString(authData)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("buildCommonAuthData: authdata decode: %w", err)
 	}
 
-	authDataJSON := map[string]interface{}{}
+	authDataJSON := map[string]any{}
 
 	err = json.Unmarshal(authDataBytes, &authDataJSON)
 	if err != nil {
@@ -818,7 +818,7 @@ func convertRecEPKToMarshalledJWK(recEPK *cryptoapi.PublicKey) ([]byte, error) {
 	var (
 		c   elliptic.Curve
 		err error
-		key interface{}
+		key any
 	)
 
 	switch recEPK.Type {
@@ -851,7 +851,7 @@ func convertRecEPKToMarshalledJWK(recEPK *cryptoapi.PublicKey) ([]byte, error) {
 }
 
 // Get the additional authenticated data from a JWE object.
-func computeAuthData(protectedHeaders map[string]interface{}, origProtectedHeader string, aad []byte) ([]byte, error) {
+func computeAuthData(protectedHeaders map[string]any, origProtectedHeader string, aad []byte) ([]byte, error) {
 	var protected string
 
 	if len(origProtectedHeader) > 0 {

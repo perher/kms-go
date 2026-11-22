@@ -23,7 +23,7 @@ const (
 // KMSSigner implements JWS Signer interface using a KMS key handle and a crypto.Crypto instance.
 type KMSSigner struct {
 	KeyType   kms.KeyType
-	KeyHandle interface{}
+	KeyHandle any
 	Crypto    crypto.Crypto
 	MultiMsg  bool
 }

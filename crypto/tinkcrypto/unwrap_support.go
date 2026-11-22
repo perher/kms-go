@@ -23,7 +23,7 @@ import (
 	ecdhpb "github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/proto/ecdh_aead_go_proto"
 )
 
-func extractPrivKey(kh *keyset.Handle) (interface{}, error) {
+func extractPrivKey(kh *keyset.Handle) (any, error) {
 	buf := new(bytes.Buffer)
 	w := &privKeyWriter{w: buf}
 	nAEAD := &noopAEAD{}

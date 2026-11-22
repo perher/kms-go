@@ -32,7 +32,7 @@ import (
 const defKeySize = 32
 
 // deriveKEKAndWrap is the entry point for Crypto.WrapKey().
-func (t *Crypto) deriveKEKAndWrap(cek, apu, apv, tag []byte, senderKH interface{}, recPubKey *cryptoapi.PublicKey,
+func (t *Crypto) deriveKEKAndWrap(cek, apu, apv, tag []byte, senderKH any, recPubKey *cryptoapi.PublicKey,
 	epkPrv *cryptoapi.PrivateKey, useXC20PKW bool) (*cryptoapi.RecipientWrappedKey, error) {
 	var (
 		kek         []byte
@@ -95,7 +95,7 @@ func (t *Crypto) wrapRaw(kek, cek, apu, apv []byte, alg, kid string, epk *crypto
 
 // deriveKEKAndUnwrap is the entry point for Crypto.UnwrapKey().
 func (t *Crypto) deriveKEKAndUnwrap(alg string, encCEK, apu, apv, tag []byte, epk *cryptoapi.PublicKey, senderKH,
-	recKH interface{}) ([]byte, error) {
+	recKH any) ([]byte, error) {
 	var (
 		kek []byte
 		err error
@@ -162,7 +162,7 @@ func (t *Crypto) unwrapRaw(alg string, kek, encCEK []byte) ([]byte, error) {
 	return wk, nil
 }
 
-func (t *Crypto) derive1PUKEK(cekSize int, apu, apv, tag []byte, senderKH interface{}, recPubKey *cryptoapi.PublicKey,
+func (t *Crypto) derive1PUKEK(cekSize int, apu, apv, tag []byte, senderKH any, recPubKey *cryptoapi.PublicKey,
 	epkPrv *cryptoapi.PrivateKey, useXC20PKW bool) (string, []byte, *cryptoapi.PublicKey, []byte, error) {
 	var (
 		kek         []byte
@@ -206,8 +206,8 @@ func (t *Crypto) derive1PUKEK(cekSize int, apu, apv, tag []byte, senderKH interf
 	return wrappingAlg, kek, epk, apu, nil
 }
 
-func (t *Crypto) derive1PUKEKForUnwrap(alg string, apu, apv, tag []byte, epk *cryptoapi.PublicKey, senderKH interface{},
-	recipientPrivateKey interface{}) ([]byte, error) {
+func (t *Crypto) derive1PUKEKForUnwrap(alg string, apu, apv, tag []byte, epk *cryptoapi.PublicKey, senderKH any,
+	recipientPrivateKey any) ([]byte, error) {
 	var (
 		kek []byte
 		err error
@@ -264,7 +264,7 @@ func (t *Crypto) deriveESKEK(apu, apv []byte, recPubKey *cryptoapi.PublicKey,
 }
 
 func (t *Crypto) deriveESKEKForUnwrap(alg string, apu, apv []byte, epk *cryptoapi.PublicKey,
-	recipientPrivateKey interface{}) ([]byte, error) {
+	recipientPrivateKey any) ([]byte, error) {
 	var (
 		kek []byte
 		err error
@@ -288,7 +288,7 @@ func (t *Crypto) deriveESKEKForUnwrap(alg string, apu, apv []byte, epk *cryptoap
 	return kek, nil
 }
 
-func (t *Crypto) derive1PUWithECKey(wrappingAlg string, apu, apv, tag []byte, senderKH interface{},
+func (t *Crypto) derive1PUWithECKey(wrappingAlg string, apu, apv, tag []byte, senderKH any,
 	recPubKey *cryptoapi.PublicKey, epkPrv *cryptoapi.PrivateKey) (string, []byte, *cryptoapi.PublicKey, []byte, error) {
 	senderPrivKey, err := ksToPrivateECDSAKey(senderKH)
 	if err != nil {
@@ -325,7 +325,7 @@ func (t *Crypto) derive1PUWithECKey(wrappingAlg string, apu, apv, tag []byte, se
 }
 
 func (t *Crypto) derive1PUWithECKeyForUnwrap(alg string, apu, apv, tag []byte, epk *cryptoapi.PublicKey,
-	senderKH interface{}, recipientPrivateKey interface{}) ([]byte, error) {
+	senderKH any, recipientPrivateKey any) ([]byte, error) {
 	var (
 		senderPubKey *ecdsa.PublicKey
 		epkCurve     elliptic.Curve
@@ -382,7 +382,7 @@ func aesCEKSize1PU(alg string) int {
 }
 
 func (t *Crypto) deriveESWithECKeyForUnwrap(alg string, apu, apv []byte, epk *cryptoapi.PublicKey,
-	recipientPrivateKey interface{}) ([]byte, error) {
+	recipientPrivateKey any) ([]byte, error) {
 	var (
 		epkCurve elliptic.Curve
 		err      error
@@ -444,7 +444,7 @@ func (t *Crypto) deriveESWithECKey(apu, apv []byte, recPubKey *cryptoapi.PublicK
 	return wrappingAlg, kek, epk, apu, nil
 }
 
-func (t *Crypto) derive1PUWithOKPKey(wrappingAlg string, apu, apv, tag []byte, senderKH interface{},
+func (t *Crypto) derive1PUWithOKPKey(wrappingAlg string, apu, apv, tag []byte, senderKH any,
 	recPubKey *cryptoapi.PublicKey, epkPrv *cryptoapi.PrivateKey) (string, []byte, *cryptoapi.PublicKey, []byte, error) {
 	senderPrivKey, err := ksToPrivateX25519Key(senderKH)
 	if err != nil {
@@ -477,7 +477,7 @@ func (t *Crypto) derive1PUWithOKPKey(wrappingAlg string, apu, apv, tag []byte, s
 }
 
 func (t *Crypto) derive1PUWithOKPKeyForUnwrap(alg string, apu, apv, tag []byte, epk *cryptoapi.PublicKey,
-	senderKH interface{}, recipientPrivateKey interface{}) ([]byte, error) {
+	senderKH any, recipientPrivateKey any) ([]byte, error) {
 	senderPubKey, err := ksToPublicX25519Key(senderKH)
 	if err != nil {
 		return nil, fmt.Errorf("derive1PUWithOKPKeyForUnwrap: failed to retrieve sender key: %w", err)
@@ -537,7 +537,7 @@ func (t *Crypto) deriveESWithOKPKey(apu, apv []byte, recPubKey *cryptoapi.Public
 }
 
 func (t *Crypto) deriveESWithOKPKeyForUnwrap(alg string, apu, apv []byte, epk *cryptoapi.PublicKey,
-	recipientPrivateKey interface{}) ([]byte, error) {
+	recipientPrivateKey any) ([]byte, error) {
 	recPrivOKPKey, ok := recipientPrivateKey.([]byte)
 	if !ok {
 		return nil, errors.New("deriveESWithOKPKeyForUnwrap: recipient key is not an OKP key")
@@ -616,7 +616,7 @@ func (t *Crypto) generateOrGetEphemeralOKPKey(epkPrv *cryptoapi.PrivateKey) ([]b
 	return epkPrv.PublicKey.X, epkPrv.D, nil
 }
 
-func ksToPrivateECDSAKey(ks interface{}) (*ecdsa.PrivateKey, error) {
+func ksToPrivateECDSAKey(ks any) (*ecdsa.PrivateKey, error) {
 	senderKH, ok := ks.(*keyset.Handle)
 	if !ok {
 		return nil, fmt.Errorf("ksToPrivateECDSAKey: %w", errBadKeyHandleFormat)
@@ -635,7 +635,7 @@ func ksToPrivateECDSAKey(ks interface{}) (*ecdsa.PrivateKey, error) {
 	return hybridECPrivToECDSAKey(prvKey), nil
 }
 
-func ksToPrivateX25519Key(ks interface{}) ([]byte, error) {
+func ksToPrivateX25519Key(ks any) ([]byte, error) {
 	senderKH, ok := ks.(*keyset.Handle)
 	if !ok {
 		return nil, fmt.Errorf("ksToPrivateX25519Key: %w", errBadKeyHandleFormat)
@@ -654,7 +654,7 @@ func ksToPrivateX25519Key(ks interface{}) ([]byte, error) {
 	return prvKey, nil
 }
 
-func ksToPublicECDSAKey(ks interface{}, kw keyWrapper) (*ecdsa.PublicKey, error) {
+func ksToPublicECDSAKey(ks any, kw keyWrapper) (*ecdsa.PublicKey, error) {
 	switch kst := ks.(type) {
 	case *keyset.Handle:
 		sPubKey, err := keyio.ExtractPrimaryPublicKey(kst)
@@ -690,7 +690,7 @@ func ksToPublicECDSAKey(ks interface{}, kw keyWrapper) (*ecdsa.PublicKey, error)
 	}
 }
 
-func ksToPublicX25519Key(ks interface{}) ([]byte, error) {
+func ksToPublicX25519Key(ks any) ([]byte, error) {
 	switch kst := ks.(type) {
 	case *keyset.Handle:
 		sPubKey, err := keyio.ExtractPrimaryPublicKey(kst)

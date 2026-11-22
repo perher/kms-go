@@ -10,7 +10,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -72,7 +71,7 @@ func TestCreateServiceFromPathWithDifferentFileSizes(t *testing.T) {
 	for _, tc := range tcs {
 		t.Run(tc.tcName, func(t *testing.T) {
 			masterKeyFilePath := tc.fileName
-			tmpfile, err := ioutil.TempFile("", masterKeyFilePath)
+			tmpfile, err := os.CreateTemp("", masterKeyFilePath)
 			require.NoError(t, err)
 
 			defer func() {
@@ -126,7 +125,7 @@ func TestCreateServiceFromPathWithDifferentFileSizes(t *testing.T) {
 
 func TestCreateServiceFromPathWithoutMasterLock(t *testing.T) {
 	masterKeyFilePath := "masterKey_file.txt"
-	tmpfile, err := ioutil.TempFile("", masterKeyFilePath)
+	tmpfile, err := os.CreateTemp("", masterKeyFilePath)
 	require.NoError(t, err)
 
 	defer func() {
@@ -220,7 +219,7 @@ func TestCreateServiceFromPathWithMasterLock(t *testing.T) {
 
 func checkCreateServiceUsingMasterLock(t *testing.T, masterLocker secretlock.Service) {
 	masterKeyFilePath := "masterKey_file.txt"
-	tmpfile, err := ioutil.TempFile("", masterKeyFilePath)
+	tmpfile, err := os.CreateTemp("", masterKeyFilePath)
 	require.NoError(t, err)
 
 	defer func() {

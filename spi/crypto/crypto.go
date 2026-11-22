@@ -20,29 +20,29 @@ type Crypto interface {
 	// 		cipherText in []byte
 	//		nonce in []byte
 	//		error in case of errors during encryption
-	Encrypt(msg, aad []byte, kh interface{}) ([]byte, []byte, error)
+	Encrypt(msg, aad []byte, kh any) ([]byte, []byte, error)
 	// Decrypt will decrypt cipher with aad and given nonce using a matching AEAD primitive in kh key handle of a
 	// private key
 	// returns:
 	//		plainText in []byte
 	//		error in case of errors
-	Decrypt(cipher, aad, nonce []byte, kh interface{}) ([]byte, error)
+	Decrypt(cipher, aad, nonce []byte, kh any) ([]byte, error)
 	// Sign will sign msg using a matching signature primitive in kh key handle of a private key
 	// returns:
 	// 		signature in []byte
 	//		error in case of errors
-	Sign(msg []byte, kh interface{}) ([]byte, error)
+	Sign(msg []byte, kh any) ([]byte, error)
 	// Verify will verify a signature for the given msg using a matching signature primitive in kh key handle of
 	// a public key
 	// returns:
 	// 		error in case of errors or nil if signature verification was successful
-	Verify(signature, msg []byte, kh interface{}) error
+	Verify(signature, msg []byte, kh any) error
 	// ComputeMAC computes message authentication code (MAC) for code data
 	// using a matching MAC primitive in kh key handle
-	ComputeMAC(data []byte, kh interface{}) ([]byte, error)
+	ComputeMAC(data []byte, kh any) ([]byte, error)
 	// VerifyMAC determines if mac is a correct authentication code (MAC) for data
 	// using a matching MAC primitive in kh key handle and returns nil if so, otherwise it returns an error.
-	VerifyMAC(mac, data []byte, kh interface{}) error
+	VerifyMAC(mac, data []byte, kh any) error
 	// WrapKey will execute key wrapping of cek using apu, apv and recipient public key 'recPubKey'.
 	// 'opts' allows setting the optional sender key handle using WithSender() option and the an authentication tag
 	// using WithTag() option. These allow ECDH-1PU key unwrapping (aka Authcrypt).
@@ -61,36 +61,36 @@ type Crypto interface {
 	// returns:
 	// 		unwrapped key in raw bytes
 	// 		error in case of errors
-	UnwrapKey(recWK *RecipientWrappedKey, kh interface{}, opts ...WrapKeyOpts) ([]byte, error)
+	UnwrapKey(recWK *RecipientWrappedKey, kh any, opts ...WrapKeyOpts) ([]byte, error)
 	// SignMulti will create a signature of messages using a matching signing primitive found in kh key handle of a
 	// private key.
 	// returns:
 	// 		signature in []byte
 	//		error in case of errors
-	SignMulti(messages [][]byte, kh interface{}) ([]byte, error)
+	SignMulti(messages [][]byte, kh any) ([]byte, error)
 	// VerifyMulti will verify a signature of messages using a matching signing primitive found in kh key handle of a
 	// public key.
 	// returns:
 	// 		error in case of errors or nil if signature verification was successful
-	VerifyMulti(messages [][]byte, signature []byte, kh interface{}) error
+	VerifyMulti(messages [][]byte, signature []byte, kh any) error
 	// VerifyProof will verify a signature proof (generated e.g. by Verifier's DeriveProof() call) for revealedMessages
 	// using a matching signing primitive found in kh key handle of a public key.
 	// returns:
 	// 		error in case of errors or nil if signature proof verification was successful
-	VerifyProof(revealedMessages [][]byte, proof, nonce []byte, kh interface{}) error
+	VerifyProof(revealedMessages [][]byte, proof, nonce []byte, kh any) error
 	// DeriveProof will create a signature proof for a list of revealed messages using BBS signature (can be built using
 	// a Signer's SignMulti() call) and a matching signing primitive found in kh key handle of a public key.
 	// returns:
 	// 		signature proof in []byte
 	//		error in case of errors
-	DeriveProof(messages [][]byte, bbsSignature, nonce []byte, revealedIndexes []int, kh interface{}) ([]byte, error)
+	DeriveProof(messages [][]byte, bbsSignature, nonce []byte, revealedIndexes []int, kh any) ([]byte, error)
 }
 
 // RecipientWrappedKey contains recipient key material required to unwrap CEK.
 type RecipientWrappedKey struct {
 	KID          string    `json:"kid,omitempty"`
 	EncryptedCEK []byte    `json:"encryptedcek,omitempty"`
-	EPK          PublicKey `json:"epk,omitempty"`
+	EPK          PublicKey `json:"epk"`
 	Alg          string    `json:"alg,omitempty"`
 	APU          []byte    `json:"apu,omitempty"`
 	APV          []byte    `json:"apv,omitempty"`
@@ -109,6 +109,6 @@ type PublicKey struct {
 
 // PrivateKey mainly used to exchange ephemeral private key in JWE encrypter.
 type PrivateKey struct {
-	PublicKey PublicKey `json:"pubKey,omitempty"`
+	PublicKey PublicKey `json:"pubKey"`
 	D         []byte    `json:"d,omitempty"`
 }

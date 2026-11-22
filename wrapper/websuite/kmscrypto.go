@@ -39,7 +39,7 @@ func (k *kmsCrypto) ExportPubKeyBytes(id string) ([]byte, kms.KeyType, error) {
 	return k.km.ExportPubKeyBytes(id)
 }
 
-func (k *kmsCrypto) CreateRaw(keyType kms.KeyType) (string, interface{}, error) {
+func (k *kmsCrypto) CreateRaw(keyType kms.KeyType) (string, any, error) {
 	kid, pkBytes, err := k.km.CreateAndExportPubKeyBytes(keyType)
 	if err != nil {
 		return "", nil, err

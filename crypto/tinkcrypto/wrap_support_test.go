@@ -158,7 +158,7 @@ type mockProtectedHeader struct {
 	Enc string  `json:"enc,omitempty"`
 	Apu string  `json:"apu,omitempty"`
 	Apv string  `json:"apv,omitempty"`
-	Epk mockKey `json:"epk,omitempty"`
+	Epk mockKey `json:"epk"`
 }
 
 type ref1PU struct {

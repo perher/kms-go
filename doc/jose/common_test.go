@@ -34,7 +34,7 @@ func TestHeaders_GetJWK(t *testing.T) {
 	jwkBytes, err := json.Marshal(&jwkKey)
 	require.NoError(t, err)
 
-	var jwkMap map[string]interface{}
+	var jwkMap map[string]any
 
 	err = json.Unmarshal(jwkBytes, &jwkMap)
 	require.NoError(t, err)

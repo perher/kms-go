@@ -606,7 +606,7 @@ func TestJWEEncryptRoundTrip(t *testing.T) {
 				_, err = jweDecrypter.Decrypt(badJWE)
 				require.EqualError(t, err, "jwedecrypt: jwe is missing encryption algorithm 'enc' header")
 
-				badJWE.ProtectedHeaders = map[string]interface{}{
+				badJWE.ProtectedHeaders = map[string]any{
 					ariesjose.HeaderEncryption: "badEncHeader",
 					ariesjose.HeaderType:       "test",
 				}
@@ -1598,7 +1598,7 @@ type mockKMSGetter struct {
 	keys map[string]*keyset.Handle
 }
 
-func (k *mockKMSGetter) Get(kid string) (interface{}, error) {
+func (k *mockKMSGetter) Get(kid string) (any, error) {
 	return k.keys[kid], nil
 }
 

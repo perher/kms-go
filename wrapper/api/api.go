@@ -65,7 +65,7 @@ type FixedKeyCrypto interface {
 // RawKeyCreator creates keypairs in the wrapped KMS, returning public keys as either JWK or the raw crypto key.
 type RawKeyCreator interface {
 	KeyCreator
-	CreateRaw(keyType kmsapi.KeyType) (string, interface{}, error)
+	CreateRaw(keyType kmsapi.KeyType) (string, any, error)
 }
 
 // KMSCryptoSigner provides signing operations.

@@ -13,7 +13,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
+
 	"log"
 	"net/http"
 	"net/url"
@@ -92,9 +92,9 @@ type importKeyResp struct {
 }
 
 // MarshalFunc is the interface expected for a marshalling function provided to WithMarshalFn.
-type MarshalFunc func(interface{}) ([]byte, error)
+type MarshalFunc func(any) ([]byte, error)
 
-type unmarshalFunc func([]byte, interface{}) error
+type unmarshalFunc func([]byte, any) error
 
 // RemoteKMS implementation of kms.KeyManager api.
 type RemoteKMS struct {
@@ -272,7 +272,7 @@ func (r *RemoteKMS) doHTTPRequest(method, destination string, mReq []byte) (*htt
 //   - KeyID raw ID of the handle
 //   - handle instance representing a remote keystore URL including KeyID
 //   - error if failure
-func (r *RemoteKMS) Create(kt kms.KeyType, opts ...kms.KeyOpts) (string, interface{}, error) {
+func (r *RemoteKMS) Create(kt kms.KeyType, opts ...kms.KeyOpts) (string, any, error) {
 	startCreate := time.Now()
 
 	keyURL, _, err := r.createKey(kt, opts...)
@@ -350,7 +350,7 @@ func (r *RemoteKMS) HealthCheck() error {
 // Returns:
 //   - handle instance representing a remote keystore URL including KeyID
 //   - error if failure
-func (r *RemoteKMS) Get(keyID string) (interface{}, error) {
+func (r *RemoteKMS) Get(keyID string) (any, error) {
 	return r.buildKIDURL(keyID), nil
 }
 
@@ -364,7 +364,7 @@ func (r *RemoteKMS) buildKIDURL(keyID string) string {
 //   - new KeyID
 //   - handle instance (to private key)
 //   - error if failure
-func (r *RemoteKMS) Rotate(kt kms.KeyType, keyID string, opts ...kms.KeyOpts) (string, interface{}, error) {
+func (r *RemoteKMS) Rotate(kt kms.KeyType, keyID string, opts ...kms.KeyOpts) (string, any, error) {
 	return "", nil, errors.New("function Rotate is not implemented in remoteKMS")
 }
 
@@ -421,7 +421,7 @@ func (r *RemoteKMS) CreateAndExportPubKeyBytes(kt kms.KeyType, opts ...kms.KeyOp
 }
 
 // PubKeyBytesToHandle is not implemented in remoteKMS.
-func (r *RemoteKMS) PubKeyBytesToHandle(pubKey []byte, kt kms.KeyType, opts ...kms.KeyOpts) (interface{}, error) {
+func (r *RemoteKMS) PubKeyBytesToHandle(pubKey []byte, kt kms.KeyType, opts ...kms.KeyOpts) (any, error) {
 	return nil, errors.New("function PubKeyBytesToHandle is not implemented in remoteKMS")
 }
 
@@ -435,8 +435,8 @@ func (r *RemoteKMS) PubKeyBytesToHandle(pubKey []byte, kt kms.KeyType, opts ...k
 //   - KeyID of the handle
 //   - handle instance (to private key)
 //   - error if import failure (key empty, invalid, doesn't match KeyType, unsupported KeyType or storing key failed)
-func (r *RemoteKMS) ImportPrivateKey(privKey interface{}, kt kms.KeyType,
-	opts ...kms.PrivateKeyOpts) (string, interface{}, error) {
+func (r *RemoteKMS) ImportPrivateKey(privKey any, kt kms.KeyType,
+	opts ...kms.PrivateKeyOpts) (string, any, error) {
 	pOpts := kms.NewOpt()
 
 	for _, opt := range opts {
@@ -491,13 +491,13 @@ func closeResponseBody(respBody io.Closer, action string) {
 	}
 }
 
-func readResponse(resp *http.Response, httpResp interface{}, unmarshal unmarshalFunc) error {
+func readResponse(resp *http.Response, httpResp any, unmarshal unmarshalFunc) error {
 	err := checkError(resp)
 	if err != nil {
 		return err
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("read response failed: %w", err)
 	}

@@ -18,7 +18,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
+
 	"net"
 	"net/http"
 	"path/filepath"
@@ -659,7 +660,7 @@ func addCertsToCertPool(pool *x509.CertPool) error {
 	for i := 1; i <= 3; i++ {
 		certPath := fmt.Sprintf("%sec-pubCert%d.pem", certPrefix, i)
 		// Create a pool with server certificates
-		cert, e := ioutil.ReadFile(filepath.Clean(certPath))
+		cert, e := os.ReadFile(filepath.Clean(certPath))
 		if e != nil {
 			return fmt.Errorf("reading certificate failed: %w", e)
 		}
@@ -707,13 +708,13 @@ func decodeCerts(pemCertsList []string) []*x509.Certificate {
 
 var errFailingMarshal = errors.New("failingMarshal always fails")
 
-func failingMarshal(interface{}) ([]byte, error) {
+func failingMarshal(any) ([]byte, error) {
 	return nil, errFailingMarshal
 }
 
 var errFailingUnmarshal = errors.New("failingUnmarshal always fails")
 
-func failingUnmarshal([]byte, interface{}) error {
+func failingUnmarshal([]byte, any) error {
 	return errFailingUnmarshal
 }
 

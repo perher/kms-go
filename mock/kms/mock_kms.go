@@ -27,7 +27,7 @@ type KeyManager struct {
 	CreateKeyID              string
 	CreateKeyValue           *keyset.Handle
 	CreateKeyErr             error
-	CreateKeyFn              func(kt kms.KeyType) (string, interface{}, error)
+	CreateKeyFn              func(kt kms.KeyType) (string, any, error)
 	GetKeyValue              *keyset.Handle
 	GetKeyErr                error
 	RotateKeyID              string
@@ -47,7 +47,7 @@ type KeyManager struct {
 }
 
 // Create a new mock ey/keyset/key handle for the type kt.
-func (k *KeyManager) Create(kt kms.KeyType, opts ...kms.KeyOpts) (string, interface{}, error) {
+func (k *KeyManager) Create(kt kms.KeyType, opts ...kms.KeyOpts) (string, any, error) {
 	if k.CreateKeyErr != nil {
 		return "", nil, k.CreateKeyErr
 	}
@@ -60,7 +60,7 @@ func (k *KeyManager) Create(kt kms.KeyType, opts ...kms.KeyOpts) (string, interf
 }
 
 // Get a mock key handle for the given keyID.
-func (k *KeyManager) Get(keyID string) (interface{}, error) {
+func (k *KeyManager) Get(keyID string) (any, error) {
 	if k.GetKeyErr != nil {
 		return nil, k.GetKeyErr
 	}
@@ -70,7 +70,7 @@ func (k *KeyManager) Get(keyID string) (interface{}, error) {
 
 // Rotate returns a mocked rotated keyset handle and its ID.
 func (k *KeyManager) Rotate(kt kms.KeyType, keyID string,
-	opts ...kms.KeyOpts) (string, interface{}, error) {
+	opts ...kms.KeyOpts) (string, any, error) {
 	if k.RotateKeyErr != nil {
 		return "", nil, k.RotateKeyErr
 	}
@@ -99,7 +99,7 @@ func (k *KeyManager) CreateAndExportPubKeyBytes(kt kms.KeyType,
 
 // PubKeyBytesToHandle will return a mocked keyset.Handle representing a public key handle.
 func (k *KeyManager) PubKeyBytesToHandle(pubKey []byte, keyType kms.KeyType,
-	opts ...kms.KeyOpts) (interface{}, error) {
+	opts ...kms.KeyOpts) (any, error) {
 	if k.PubKeyBytesToHandleErr != nil {
 		return nil, k.PubKeyBytesToHandleErr
 	}
@@ -108,8 +108,8 @@ func (k *KeyManager) PubKeyBytesToHandle(pubKey []byte, keyType kms.KeyType,
 }
 
 // ImportPrivateKey will emulate importing a private key and returns a mocked keyID, private key handle.
-func (k *KeyManager) ImportPrivateKey(privKey interface{}, keyType kms.KeyType,
-	opts ...kms.PrivateKeyOpts) (string, interface{}, error) {
+func (k *KeyManager) ImportPrivateKey(privKey any, keyType kms.KeyType,
+	opts ...kms.PrivateKeyOpts) (string, any, error) {
 	if k.ImportPrivateKeyErr != nil {
 		return "", nil, k.ImportPrivateKeyErr
 	}

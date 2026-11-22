@@ -10,16 +10,16 @@ import (
 )
 
 type signer interface {
-	Sign(msg []byte, kh interface{}) ([]byte, error)
+	Sign(msg []byte, kh any) ([]byte, error)
 }
 
 type multiSigner interface {
 	signer
-	SignMulti(messages [][]byte, kh interface{}) ([]byte, error)
+	SignMulti(messages [][]byte, kh any) ([]byte, error)
 }
 
 type verifier interface {
-	Verify(signature []byte, msg []byte, kh interface{}) error
+	Verify(signature []byte, msg []byte, kh any) error
 }
 
 type signerVerifier interface {
@@ -28,11 +28,11 @@ type signerVerifier interface {
 }
 
 type keyGetter interface {
-	Get(keyID string) (interface{}, error)
+	Get(keyID string) (any, error)
 }
 
 type keyHandleFetcher interface {
-	PubKeyBytesToHandle(pubKeyBytes []byte, keyType kmsapi.KeyType, opts ...kmsapi.KeyOpts) (interface{}, error)
+	PubKeyBytesToHandle(pubKeyBytes []byte, keyType kmsapi.KeyType, opts ...kmsapi.KeyOpts) (any, error)
 	ExportPubKeyBytes(keyID string) ([]byte, kmsapi.KeyType, error)
 	keyGetter
 }
@@ -48,8 +48,8 @@ type keyManager interface {
 }
 
 type encDecrypter interface {
-	Encrypt(msg, aad []byte, kh interface{}) ([]byte, []byte, error)
-	Decrypt(cipher, aad, nonce []byte, kh interface{}) ([]byte, error)
+	Encrypt(msg, aad []byte, kh any) ([]byte, []byte, error)
+	Decrypt(cipher, aad, nonce []byte, kh any) ([]byte, error)
 }
 
 type allCrypto interface {

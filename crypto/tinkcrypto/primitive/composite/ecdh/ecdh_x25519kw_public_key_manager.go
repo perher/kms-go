@@ -41,7 +41,7 @@ func newX25519ECDHKWPublicKeyManager() *x25519ECDHKWPublicKeyManager {
 }
 
 // Primitive creates an ECDHESXChachaPublicKey subtle for the given serialized ECDHESXChachaPublicKey proto.
-func (km *x25519ECDHKWPublicKeyManager) Primitive(serializedKey []byte) (interface{}, error) {
+func (km *x25519ECDHKWPublicKeyManager) Primitive(serializedKey []byte) (any, error) {
 	if len(serializedKey) == 0 {
 		return nil, errInvalidx25519ECDHKWPublicKey
 	}

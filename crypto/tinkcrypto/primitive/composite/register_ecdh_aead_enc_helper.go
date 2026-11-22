@@ -37,7 +37,7 @@ const (
 	XChaCha20Poly1305TypeURL = "type.googleapis.com/google.crypto.tink.XChaCha20Poly1305Key"
 )
 
-type marshalFunc func(interface{}) ([]byte, error)
+type marshalFunc func(any) ([]byte, error)
 
 // RegisterCompositeAEADEncHelper registers a content encryption helper.
 type RegisterCompositeAEADEncHelper struct {

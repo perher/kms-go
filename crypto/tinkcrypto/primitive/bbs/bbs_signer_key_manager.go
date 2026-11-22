@@ -43,7 +43,7 @@ func newBBSSignerKeyManager() *bbsSignerKeyManager {
 }
 
 // Primitive creates an BBS Signer subtle for the given serialized BBSPrivateKey proto.
-func (km *bbsSignerKeyManager) Primitive(serializedKey []byte) (interface{}, error) {
+func (km *bbsSignerKeyManager) Primitive(serializedKey []byte) (any, error) {
 	if len(serializedKey) == 0 {
 		return nil, errInvalidBBSSignerKey
 	}

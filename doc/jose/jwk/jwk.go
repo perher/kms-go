@@ -231,7 +231,7 @@ func (j *JWK) isSecp256k1() bool {
 	return isSecp256k1Key(j.Key) || isSecp256k1(j.Algorithm, j.Kty, j.Crv)
 }
 
-func isSecp256k1Key(pubKey interface{}) bool {
+func isSecp256k1Key(pubKey any) bool {
 	switch key := pubKey.(type) {
 	case *ecdsa.PublicKey:
 		return key.Curve == btcec.S256()
@@ -289,7 +289,7 @@ func unmarshalSecp256k1(jwk *jsonWebKey) (*JWK, error) {
 		return nil, ErrInvalidKey
 	}
 
-	var key interface{}
+	var key any
 
 	if jwk.D != nil {
 		key = &ecdsa.PrivateKey{
@@ -372,7 +372,7 @@ func unmarshalBLS12381G2(jwk *jsonWebKey) (*JWK, error) {
 	}
 
 	var (
-		key interface{}
+		key any
 		err error
 	)
 

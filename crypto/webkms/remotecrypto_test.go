@@ -15,9 +15,10 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -151,7 +152,7 @@ func processPOSTEncRequest(w http.ResponseWriter, r *http.Request, encKH *keyset
 		return errors.New("http request body invalid")
 	}
 
-	reqBody, err := ioutil.ReadAll(r.Body)
+	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		return err
 	}
@@ -351,7 +352,7 @@ func processPOSTSigRequest(w http.ResponseWriter, r *http.Request, sigKH *keyset
 		return errors.New("http request body invalid")
 	}
 
-	reqBody, err := ioutil.ReadAll(r.Body)
+	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		return err
 	}
@@ -524,7 +525,7 @@ func processPOSTMACRequest(w http.ResponseWriter, r *http.Request, macKH *keyset
 		return errors.New("http request body invalid")
 	}
 
-	reqBody, err := ioutil.ReadAll(r.Body)
+	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		return err
 	}
@@ -825,7 +826,7 @@ func processPOSTWrapRequest(w http.ResponseWriter, r *http.Request, senderKH, re
 		return errors.New("http request body invalid")
 	}
 
-	reqBody, err := ioutil.ReadAll(r.Body)
+	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		return err
 	}
@@ -1209,7 +1210,7 @@ func processBBSPOSTRequest(w http.ResponseWriter, r *http.Request, sigKH *keyset
 		return errors.New("http request body invalid")
 	}
 
-	reqBody, err := ioutil.ReadAll(r.Body)
+	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		return err
 	}
@@ -1490,7 +1491,7 @@ func addCertsToCertPool(pool *x509.CertPool) error {
 
 		path := filepath.Clean(certPath)
 
-		cert, e := ioutil.ReadFile(path)
+		cert, e := os.ReadFile(path)
 		if e != nil {
 			return fmt.Errorf("reading certificate failed: %w", e)
 		}
@@ -1538,13 +1539,13 @@ func decodeCerts(pemCertsList []string) []*x509.Certificate {
 
 var errFailingMarshal = errors.New("failingMarshal always fails")
 
-func failingMarshal(interface{}) ([]byte, error) {
+func failingMarshal(any) ([]byte, error) {
 	return nil, errFailingMarshal
 }
 
 var errFailingUnmarshal = errors.New("failingUnmarshal always fails")
 
-func failingUnmarshal([]byte, interface{}) error {
+func failingUnmarshal([]byte, any) error {
 	return errFailingUnmarshal
 }
 

@@ -17,7 +17,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+
 	"os"
 	"strings"
 	"testing"
@@ -641,7 +641,7 @@ func createMasterKeyAndSecretLock(t *testing.T) secretlock.Service {
 	t.Helper()
 
 	masterKeyFilePath := "masterKey_file.txt"
-	tmpfile, err := ioutil.TempFile("", masterKeyFilePath)
+	tmpfile, err := os.CreateTemp("", masterKeyFilePath)
 	require.NoError(t, err)
 
 	defer func() {

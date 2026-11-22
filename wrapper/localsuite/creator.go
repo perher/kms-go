@@ -28,7 +28,7 @@ func (k *keyCreatorImpl) ExportPubKeyBytes(id string) ([]byte, kms.KeyType, erro
 	return k.kms.ExportPubKeyBytes(id)
 }
 
-func (k *keyCreatorImpl) CreateRaw(keyType kms.KeyType) (string, interface{}, error) {
+func (k *keyCreatorImpl) CreateRaw(keyType kms.KeyType) (string, any, error) {
 	kid, pkBytes, err := k.kms.CreateAndExportPubKeyBytes(keyType)
 	if err != nil {
 		return "", nil, err

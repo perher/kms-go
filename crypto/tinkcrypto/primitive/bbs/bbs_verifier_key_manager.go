@@ -36,7 +36,7 @@ func newBBSVerifierKeyManager() *bbsVerifierKeyManager {
 }
 
 // Primitive creates an BBS Verifier subtle for the given serialized BBSPublicKey proto.
-func (km *bbsVerifierKeyManager) Primitive(serializedKey []byte) (interface{}, error) {
+func (km *bbsVerifierKeyManager) Primitive(serializedKey []byte) (any, error) {
 	if len(serializedKey) == 0 {
 		return nil, errInvalidBBSVerifierKey
 	}

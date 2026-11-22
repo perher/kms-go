@@ -64,7 +64,7 @@ var _ api.KMSCryptoMultiSigner = &multiSignerImpl{}
 
 type fixedMultiSignerImpl struct {
 	cr multiSigner
-	kh interface{}
+	kh any
 }
 
 func (f *fixedMultiSignerImpl) SignMulti(msgs [][]byte) ([]byte, error) {

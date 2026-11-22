@@ -13,7 +13,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -144,9 +143,9 @@ type unwrapKeyResp struct {
 	Key []byte `json:"key"`
 }
 
-type marshalFunc func(interface{}) ([]byte, error)
+type marshalFunc func(any) ([]byte, error)
 
-type unmarshalFunc func([]byte, interface{}) error
+type unmarshalFunc func([]byte, any) error
 
 // RemoteCrypto implementation of kms.KeyManager api.
 type RemoteCrypto struct {
@@ -239,7 +238,7 @@ func (r *RemoteCrypto) doHTTPRequest(method, destination string, mReq []byte) (*
 //	cipherText in []byte
 //	nonce in []byte
 //	error in case of errors during encryption
-func (r *RemoteCrypto) Encrypt(msg, aad []byte, keyURL interface{}) ([]byte, []byte, error) {
+func (r *RemoteCrypto) Encrypt(msg, aad []byte, keyURL any) ([]byte, []byte, error) {
 	startEncrypt := time.Now()
 	destination := fmt.Sprintf("%s", keyURL) + encryptURI
 
@@ -265,7 +264,7 @@ func (r *RemoteCrypto) Encrypt(msg, aad []byte, keyURL interface{}) ([]byte, []b
 		return nil, nil, fmt.Errorf("posting Encrypt returned http error: %s", resp.Status)
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, nil, fmt.Errorf("read encryption response for Encrypt failed [%s, %w]", destination, err)
 	}
@@ -288,7 +287,7 @@ func (r *RemoteCrypto) Encrypt(msg, aad []byte, keyURL interface{}) ([]byte, []b
 //
 //	plainText in []byte
 //	error in case of errors
-func (r *RemoteCrypto) Decrypt(cipher, aad, nonce []byte, keyURL interface{}) ([]byte, error) {
+func (r *RemoteCrypto) Decrypt(cipher, aad, nonce []byte, keyURL any) ([]byte, error) {
 	startDecrypt := time.Now()
 	destination := fmt.Sprintf("%s", keyURL) + decryptURI
 
@@ -315,7 +314,7 @@ func (r *RemoteCrypto) Decrypt(cipher, aad, nonce []byte, keyURL interface{}) ([
 		return nil, fmt.Errorf("posting Decrypt returned http error: %s", resp.Status)
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read decryption response for Decrypt failed [%s, %w]", destination, err)
 	}
@@ -337,7 +336,7 @@ func (r *RemoteCrypto) Decrypt(cipher, aad, nonce []byte, keyURL interface{}) ([
 //
 //	signature in []byte
 //	error in case of errors
-func (r *RemoteCrypto) Sign(msg []byte, keyURL interface{}) ([]byte, error) {
+func (r *RemoteCrypto) Sign(msg []byte, keyURL any) ([]byte, error) {
 	startSign := time.Now()
 	destination := fmt.Sprintf("%s", keyURL) + signURI
 
@@ -362,7 +361,7 @@ func (r *RemoteCrypto) Sign(msg []byte, keyURL interface{}) ([]byte, error) {
 		return nil, fmt.Errorf("posting Sign returned http error: %s", resp.Status)
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read signature response for Sign failed [%s, %w]", destination, err)
 	}
@@ -384,7 +383,7 @@ func (r *RemoteCrypto) Sign(msg []byte, keyURL interface{}) ([]byte, error) {
 // returns:
 //
 //	error in case of errors or nil if signature verification was successful
-func (r *RemoteCrypto) Verify(signature, msg []byte, keyURL interface{}) error {
+func (r *RemoteCrypto) Verify(signature, msg []byte, keyURL any) error {
 	startVerify := time.Now()
 	destination := fmt.Sprintf("%s", keyURL) + verifyURI
 
@@ -417,8 +416,8 @@ func (r *RemoteCrypto) Verify(signature, msg []byte, keyURL interface{}) error {
 
 // ComputeMAC remotely computes message authentication code (MAC) for code data with key at keyURL.
 // using a matching MAC primitive in kh key handle.
-func (r *RemoteCrypto) ComputeMAC(data []byte, keyURL interface{}) ([]byte, error) { // nolint:gocyclo
-	keyHash := string(sha256.New().Sum([]byte(fmt.Sprintf("%s_%s", keyURL, data))))
+func (r *RemoteCrypto) ComputeMAC(data []byte, keyURL any) ([]byte, error) { // nolint:gocyclo
+	keyHash := string(sha256.New().Sum(fmt.Appendf(nil, "%s_%s", keyURL, data)))
 
 	if r.opts.ComputeMACCache != nil {
 		v, err := r.opts.ComputeMACCache.Get(keyHash)
@@ -455,7 +454,7 @@ func (r *RemoteCrypto) ComputeMAC(data []byte, keyURL interface{}) ([]byte, erro
 		return nil, fmt.Errorf("posting ComputeMAC request returned http error: %s", resp.Status)
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read response for ComputeMAC failed [%s, %w]", destination, err)
 	}
@@ -480,7 +479,7 @@ func (r *RemoteCrypto) ComputeMAC(data []byte, keyURL interface{}) ([]byte, erro
 
 // VerifyMAC remotely determines if mac is a correct authentication code (MAC) for data using a key at KeyURL
 // using a matching MAC primitive in kh key handle and returns nil if so, otherwise it returns an error.
-func (r *RemoteCrypto) VerifyMAC(mac, data []byte, keyURL interface{}) error {
+func (r *RemoteCrypto) VerifyMAC(mac, data []byte, keyURL any) error {
 	startVerifyMAC := time.Now()
 	destination := fmt.Sprintf("%s", keyURL) + verifyMACURI
 
@@ -570,7 +569,7 @@ func (r *RemoteCrypto) WrapKey(cek, apu, apv []byte, recPubKey *cryptoapi.Public
 		return nil, fmt.Errorf("posting WrapKey returned http error: %s", resp.Status)
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read wrap key response for WrapKey failed [%s, %w]", destination, err)
 	}
@@ -601,7 +600,7 @@ func (r *RemoteCrypto) buildWrappedKeyResponse(respBody []byte, dest string) (*c
 //
 //	unwrapped key in raw bytes
 //	error in case of errors
-func (r *RemoteCrypto) UnwrapKey(recWK *cryptoapi.RecipientWrappedKey, keyURL interface{},
+func (r *RemoteCrypto) UnwrapKey(recWK *cryptoapi.RecipientWrappedKey, keyURL any,
 	opts ...cryptoapi.WrapKeyOpts) ([]byte, error) {
 	startUnwrapKey := time.Now()
 	destination := fmt.Sprintf("%s", keyURL) + unwrapURI
@@ -643,7 +642,7 @@ func (r *RemoteCrypto) UnwrapKey(recWK *cryptoapi.RecipientWrappedKey, keyURL in
 		return nil, fmt.Errorf("posting UnwrapKey returned http error: %s", resp.Status)
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read unwrapped key response for UnwrapKey failed [%s, %w]", destination, err)
 	}
@@ -660,7 +659,7 @@ func (r *RemoteCrypto) UnwrapKey(recWK *cryptoapi.RecipientWrappedKey, keyURL in
 	return httpResp.Key, err
 }
 
-func ksToCryptoPublicKey(ks interface{}) (*cryptoapi.PublicKey, error) {
+func ksToCryptoPublicKey(ks any) (*cryptoapi.PublicKey, error) {
 	switch kst := ks.(type) {
 	case *keyset.Handle:
 		sPubKey, err := keyio.ExtractPrimaryPublicKey(kst)
@@ -681,7 +680,7 @@ func ksToCryptoPublicKey(ks interface{}) (*cryptoapi.PublicKey, error) {
 //
 //	signature in []byte
 //	error in case of errors
-func (r *RemoteCrypto) SignMulti(messages [][]byte, signerKeyURL interface{}) ([]byte, error) {
+func (r *RemoteCrypto) SignMulti(messages [][]byte, signerKeyURL any) ([]byte, error) {
 	startSign := time.Now()
 	destination := fmt.Sprintf("%s", signerKeyURL) + signMultiURI
 
@@ -706,7 +705,7 @@ func (r *RemoteCrypto) SignMulti(messages [][]byte, signerKeyURL interface{}) ([
 		return nil, fmt.Errorf("posting BBS+ sign returned http error: %s", resp.Status)
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read signature response for BBS+ Sign failed [%s, %w]", destination, err)
 	}
@@ -727,7 +726,7 @@ func (r *RemoteCrypto) SignMulti(messages [][]byte, signerKeyURL interface{}) ([
 // returns:
 //
 //	error in case of errors or nil if signature verification was successful
-func (r *RemoteCrypto) VerifyMulti(messages [][]byte, signature []byte, signerKeyURL interface{}) error {
+func (r *RemoteCrypto) VerifyMulti(messages [][]byte, signature []byte, signerKeyURL any) error {
 	startVerify := time.Now()
 	destination := fmt.Sprintf("%s", signerKeyURL) + verifyMultiURI
 
@@ -763,7 +762,7 @@ func (r *RemoteCrypto) VerifyMulti(messages [][]byte, signature []byte, signerKe
 // returns:
 //
 //	error in case of errors or nil if signature proof verification was successful
-func (r *RemoteCrypto) VerifyProof(revealedMessages [][]byte, proof, nonce []byte, signerKeyURL interface{}) error {
+func (r *RemoteCrypto) VerifyProof(revealedMessages [][]byte, proof, nonce []byte, signerKeyURL any) error {
 	startVerifyProof := time.Now()
 	destination := fmt.Sprintf("%s", signerKeyURL) + verifyProofURI
 
@@ -802,7 +801,7 @@ func (r *RemoteCrypto) VerifyProof(revealedMessages [][]byte, proof, nonce []byt
 //	signature proof in []byte
 //	error in case of errors
 func (r *RemoteCrypto) DeriveProof(messages [][]byte, bbsSignature, nonce []byte, revealedIndexes []int,
-	signerKeyURL interface{}) ([]byte, error) {
+	signerKeyURL any) ([]byte, error) {
 	startDeriveProof := time.Now()
 	destination := fmt.Sprintf("%s", signerKeyURL) + deriveProofURI
 
@@ -830,7 +829,7 @@ func (r *RemoteCrypto) DeriveProof(messages [][]byte, bbsSignature, nonce []byte
 		return nil, fmt.Errorf("posting BBS+ Derive proof returned http error: %s", resp.Status)
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("read signature response for BBS+ Derive proof failed [%s, %w]", destination, err)
 	}
