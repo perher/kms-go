@@ -10,7 +10,7 @@ import (
 	"crypto/aes"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard_v2,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	tinkaead "github.com/google/tink/go/aead"
 	"github.com/google/tink/go/core/cryptofmt"
 	"github.com/google/tink/go/keyset"

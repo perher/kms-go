@@ -50,7 +50,7 @@ func TestRemoteKeyStore(t *testing.T) {
 	pvKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	require.NoError(t, err)
 
-	marshalledPubKey := elliptic.Marshal(pvKey.PublicKey.Curve, pvKey.PublicKey.X, pvKey.PublicKey.Y)
+	marshalledPubKey := elliptic.Marshal(pvKey.PublicKey.Curve, pvKey.PublicKey.X, pvKey.PublicKey.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 
 	hf := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err = processPOSTRequest(w, r, defaultKeyStoreID, defaultKID, marshalledPubKey, kmsapi.ECDSAP256TypeIEEEP1363)
@@ -310,7 +310,7 @@ func TestRemoteKeyStoreWithHeadersFunc(t *testing.T) {
 	pvKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	require.NoError(t, err)
 
-	marshalledPubKey := elliptic.Marshal(pvKey.PublicKey.Curve, pvKey.PublicKey.X, pvKey.PublicKey.Y)
+	marshalledPubKey := elliptic.Marshal(pvKey.PublicKey.Curve, pvKey.PublicKey.X, pvKey.PublicKey.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 
 	hf := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err = processPOSTRequest(w, r, defaultKeyStoreID, defaultKID, marshalledPubKey, kmsapi.ECDSAP256TypeIEEEP1363)

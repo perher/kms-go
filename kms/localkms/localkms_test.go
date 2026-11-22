@@ -415,6 +415,7 @@ func TestLocalKMS_Success(t *testing.T) {
 	}
 }
 
+//nolint:gocognit // test with many sub-cases
 func TestLocalKMS_ImportPrivateKey(t *testing.T) { // nolint:gocyclo
 	// create a real (not mocked) master key and secret lock to test the KMS end to end
 	sl := createMasterKeyAndSecretLock(t)
@@ -592,13 +593,13 @@ func TestLocalKMS_ImportPrivateKey(t *testing.T) { // nolint:gocyclo
 
 			var expectedPubKey []byte
 
-			switch tt.keyType {
+			switch tt.keyType { //nolint:exhaustive // test table only has EC key types
 			case kmsapi.ECDSAP256TypeDER, kmsapi.ECDSAP384TypeDER, kmsapi.ECDSAP521TypeDER, kmsapi.ECDSASecp256k1TypeDER:
 				expectedPubKey, err = x509.MarshalPKIXPublicKey(privKey.Public())
 				require.NoError(t, err)
 			case kmsapi.ECDSAP256TypeIEEEP1363, kmsapi.ECDSAP384TypeIEEEP1363, kmsapi.ECDSAP521TypeIEEEP1363,
 				kmsapi.ECDSASecp256k1TypeIEEEP1363:
-				expectedPubKey = elliptic.Marshal(tt.curve, privKey.X, privKey.Y)
+				expectedPubKey = elliptic.Marshal(tt.curve, privKey.X, privKey.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 			case kmsapi.NISTP256ECDHKWType, kmsapi.NISTP384ECDHKWType, kmsapi.NISTP521ECDHKWType:
 				var curveName string
 
@@ -615,8 +616,8 @@ func TestLocalKMS_ImportPrivateKey(t *testing.T) { // nolint:gocyclo
 
 				cryptoKey := &crypto.PublicKey{
 					KID:   ksID,
-					X:     privKey.PublicKey.X.Bytes(),
-					Y:     privKey.PublicKey.Y.Bytes(),
+					X:     privKey.X.Bytes(),
+					Y:     privKey.Y.Bytes(),
 					Curve: curveName,
 					Type:  "EC",
 				}

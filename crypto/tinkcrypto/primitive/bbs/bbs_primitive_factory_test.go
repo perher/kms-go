@@ -10,7 +10,7 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard_v2,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	"github.com/google/tink/go/core/cryptofmt"
 	"github.com/google/tink/go/core/primitiveset"
 	"github.com/google/tink/go/keyset"
@@ -28,6 +28,7 @@ import (
 	bbspb "github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/proto/bbs_go_proto"
 )
 
+//nolint:gocognit // test with many sub-cases
 func TestSignerVerifierFactory(t *testing.T) {
 	primaryPrivProto := generatePrivateKeyProto(t)
 	sPrimaryPriv, e := proto.Marshal(primaryPrivProto)

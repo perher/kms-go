@@ -15,7 +15,7 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard_v2,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	commonpb "github.com/google/tink/go/proto/common_go_proto"
 	ecdsapb "github.com/google/tink/go/proto/ecdsa_go_proto"
 	ed25519pb "github.com/google/tink/go/proto/ed25519_go_proto"
@@ -215,6 +215,7 @@ func writePubKey(w io.Writer, key *tinkpb.Keyset_Key) (bool, kms.KeyType, error)
 	return n > 0, kt, nil
 }
 
+//nolint:dupl // ECDSA and secp256k1 protos are distinct types
 func getMarshalledECDSAKeyValueFromProto(pubKeyProto *ecdsapb.EcdsaPublicKey) ([]byte, kms.KeyType, error) {
 	var (
 		marshaledRawPubKey []byte
@@ -247,7 +248,7 @@ func getMarshalledECDSAKeyValueFromProto(pubKeyProto *ecdsapb.EcdsaPublicKey) ([
 
 		kt = ecdsaKMSKeyTypes[derPrefix+curveName]
 	case ecdsapb.EcdsaSignatureEncoding_IEEE_P1363:
-		marshaledRawPubKey = elliptic.Marshal(curve, pubKey.X, pubKey.Y)
+		marshaledRawPubKey = elliptic.Marshal(curve, pubKey.X, pubKey.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 		kt = ecdsaKMSKeyTypes[p13163Prefix+curveName]
 	default:
 		return nil, "", fmt.Errorf("can't export key with bad key encoding: '%s'", pubKeyProto.Params.Encoding)
@@ -256,6 +257,7 @@ func getMarshalledECDSAKeyValueFromProto(pubKeyProto *ecdsapb.EcdsaPublicKey) ([
 	return marshaledRawPubKey, kt, nil
 }
 
+//nolint:dupl // ECDSA and secp256k1 protos are distinct types
 func getMarshalledSecp256K1KeyValueFromProto(pkPB *secp256k1pb.Secp256K1PublicKey) ([]byte, kms.KeyType, error) {
 	var (
 		marshaledRawPubKey []byte
@@ -288,7 +290,7 @@ func getMarshalledSecp256K1KeyValueFromProto(pkPB *secp256k1pb.Secp256K1PublicKe
 
 		kt = ecdsaKMSKeyTypes[derPrefix+curveName]
 	case secp256k1pb.Secp256K1SignatureEncoding_Bitcoin_IEEE_P1363:
-		marshaledRawPubKey = elliptic.Marshal(curve, pubKey.X, pubKey.Y)
+		marshaledRawPubKey = elliptic.Marshal(curve, pubKey.X, pubKey.Y) //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 		kt = ecdsaKMSKeyTypes[p13163Prefix+curveName]
 	default:
 		return nil, "", fmt.Errorf("can't export key with bad key encoding: '%s'", pkPB.Params.Encoding)

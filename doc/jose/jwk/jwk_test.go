@@ -24,6 +24,8 @@ import (
 )
 
 func TestDecodePublicKey(t *testing.T) {
+	t.Parallel()
+
 	t.Run("Test decode public key failure", func(t *testing.T) {
 		tests := []struct {
 			name    string
@@ -360,6 +362,8 @@ func TestJWK_BBSKeyValidation(t *testing.T) {
 }
 
 func TestJWK_KeyType(t *testing.T) {
+	t.Parallel()
+
 	t.Run("success: get KeyType from JWK", func(t *testing.T) {
 		testCases := []struct {
 			jwk     string

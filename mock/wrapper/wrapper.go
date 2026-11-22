@@ -64,12 +64,12 @@ func (m *MockKMSCrypto) Verify(sig, msg []byte, pub *jwk.JWK) error {
 }
 
 // Encrypt mock.
-func (m *MockKMSCrypto) Encrypt(msg, aad []byte, kid string) (cipher, nonce []byte, err error) {
+func (m *MockKMSCrypto) Encrypt(msg, aad []byte, kid string) ([]byte, []byte, error) {
 	return m.EncryptVal, m.EncryptNonce, m.EncryptErr
 }
 
 // Decrypt mock.
-func (m *MockKMSCrypto) Decrypt(cipher, aad, nonce []byte, kid string) (msg []byte, err error) {
+func (m *MockKMSCrypto) Decrypt(cipher, aad, nonce []byte, kid string) ([]byte, error) {
 	return m.DecryptVal, m.DecryptErr
 }
 

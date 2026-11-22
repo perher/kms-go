@@ -864,8 +864,8 @@ func TestInteropWithLocalJoseEncryptAndGoJoseDecrypt(t *testing.T) {
 
 	// add third key to recECKeys
 	recECKeys = append(recECKeys, &cryptoapi.PublicKey{
-		X:     rec3PrivKey.PublicKey.X.Bytes(),
-		Y:     rec3PrivKey.PublicKey.Y.Bytes(),
+		X:     rec3PrivKey.X.Bytes(),
+		Y:     rec3PrivKey.Y.Bytes(),
 		Curve: rec3PrivKey.PublicKey.Curve.Params().Name,
 		Type:  "EC",
 	})
@@ -906,8 +906,8 @@ func TestInteropWithLocalJoseEncryptAndGoJoseDecryptUsingCompactSerialization(t 
 	require.NoError(t, err)
 
 	recECKeys = append(recECKeys, &cryptoapi.PublicKey{
-		X:     recPrivKey.PublicKey.X.Bytes(),
-		Y:     recPrivKey.PublicKey.Y.Bytes(),
+		X:     recPrivKey.X.Bytes(),
+		Y:     recPrivKey.Y.Bytes(),
 		Curve: recPrivKey.PublicKey.Curve.Params().Name,
 		Type:  "EC",
 	})

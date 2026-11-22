@@ -12,13 +12,12 @@ import (
 	"fmt"
 
 	"github.com/trustbloc/kms-go/spi/kms"
-	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 )
 
 // newReader will create a new local storage storeReader of a keyset with ID value = keysetID
 // it is used internally by local kms.
-func newReader(store kms.Store, keysetID string, opts ...kmsapi.ExportKeyOpts) *storeReader {
-	pOpts := kmsapi.NewExportOpt()
+func newReader(store kms.Store, keysetID string, opts ...kms.ExportKeyOpts) *storeReader {
+	pOpts := kms.NewExportOpt()
 
 	for _, opt := range opts {
 		opt(pOpts)
@@ -59,7 +58,7 @@ func (l *storeReader) Read(p []byte) (int, error) {
 	var metadata map[string]any
 
 	if l.getMetadata {
-		metadataStorage, ok := l.storage.(kmsapi.StoreWithMetadata)
+		metadataStorage, ok := l.storage.(kms.StoreWithMetadata)
 		if !ok {
 			return 0, errors.New("requested to get 'metadata', but storage doesn't support it")
 		}

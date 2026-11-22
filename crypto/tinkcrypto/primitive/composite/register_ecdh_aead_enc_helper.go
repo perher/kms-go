@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 
 	aead "github.com/google/tink/go/aead/subtle"
 	"github.com/google/tink/go/core/registry"
@@ -19,7 +20,6 @@ import (
 	xchachapb "github.com/google/tink/go/proto/xchacha20_poly1305_go_proto"
 	"github.com/google/tink/go/tink"
 	"golang.org/x/crypto/chacha20poly1305"
-	"golang.org/x/crypto/poly1305"
 	"google.golang.org/protobuf/proto"
 
 	"github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/aead/subtle"
@@ -92,7 +92,7 @@ func NewRegisterCompositeAEADEncHelper(k *tinkpb.KeyTemplate) (*RegisterComposit
 			return nil, fmt.Errorf("compositeAEADEncHelper: failed to serialize gcm key format, error: %w", err)
 		}
 	case ChaCha20Poly1305TypeURL:
-		tagSize = poly1305.TagSize
+		tagSize = chacha20poly1305.Overhead
 		ivSize = chacha20poly1305.NonceSize
 
 		skf, err = buildChachaSKF(k)
@@ -100,7 +100,7 @@ func NewRegisterCompositeAEADEncHelper(k *tinkpb.KeyTemplate) (*RegisterComposit
 			return nil, err
 		}
 	case XChaCha20Poly1305TypeURL:
-		tagSize = poly1305.TagSize
+		tagSize = chacha20poly1305.Overhead
 		ivSize = chacha20poly1305.NonceSizeX
 
 		skf, err = buildXChachaSKF(k)
@@ -325,8 +325,7 @@ func (r *RegisterCompositeAEADEncHelper) BuildDecData(encData *EncryptedData) []
 	iv := encData.IV
 	tag := encData.Tag
 	ct := encData.Ciphertext
-	finalCT := append(iv, ct...)
-	finalCT = append(finalCT, tag...)
+	finalCT := slices.Concat(iv, ct, tag)
 
 	return finalCT
 }

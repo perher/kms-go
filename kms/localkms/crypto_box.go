@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard_v2,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	"github.com/google/tink/go/aead"
 	"github.com/google/tink/go/keyset"
 	ed25519pb "github.com/google/tink/go/proto/ed25519_go_proto"

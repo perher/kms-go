@@ -311,7 +311,7 @@ func TestEasyAndEasyOpen(t *testing.T) {
 	})
 }
 
-// nolint:gocyclo // test code
+//nolint:gocyclo,gocognit // test code
 func processPOSTEasyOpenRequest(w http.ResponseWriter, r *http.Request, recPrivKey, sPrivKey ed25519.PrivateKey) error {
 	if valid := validateHTTPMethod(w, r); !valid {
 		return errors.New("http method invalid")

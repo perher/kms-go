@@ -38,6 +38,9 @@ import (
 	cryptoapi "github.com/trustbloc/kms-go/spi/crypto"
 )
 
+// okpKty is the JWK key type of X25519 (OKP) keys.
+const okpKty = "OKP"
+
 // EncAlg represents the JWE content encryption algorithm.
 type EncAlg string
 
@@ -358,7 +361,7 @@ func (je *JWEEncrypt) encodeAPUAPV(kek *cryptoapi.RecipientWrappedKey) {
 func (je *JWEEncrypt) getWrapKeyOpts(tag []byte, epk *cryptoapi.PrivateKey) []cryptoapi.WrapKeyOpts {
 	var wrapOpts []cryptoapi.WrapKeyOpts
 
-	if je.recipientsKeys[0].Type == "OKP" {
+	if je.recipientsKeys[0].Type == okpKty {
 		wrapOpts = append(wrapOpts, cryptoapi.WithXC20PKW())
 	}
 
@@ -452,14 +455,14 @@ func addKDFHeaders(rawHeaders map[string]json.RawMessage, recipientWK *cryptoapi
 	rawHeaders["epk"] = mEPK
 
 	if len(recipientWK.APU) != 0 {
-		rawHeaders["apu"], err = marshaller(fmt.Sprintf("%s", recipientWK.APU))
+		rawHeaders["apu"], err = marshaller(string(recipientWK.APU))
 		if err != nil {
 			return err
 		}
 	}
 
 	if len(recipientWK.APV) != 0 {
-		rawHeaders["apv"], err = marshaller(fmt.Sprintf("%s", recipientWK.APV))
+		rawHeaders["apv"], err = marshaller(string(recipientWK.APV))
 		if err != nil {
 			return err
 		}
@@ -564,22 +567,24 @@ func (je *JWEEncrypt) useNISTPKW() bool {
 }
 
 func (je *JWEEncrypt) newCEK() []byte {
-	twoKeys := 2
-	defKeySize := 32
+	const (
+		twoKeys    = 2
+		defKeySize = 32
+	)
 
 	switch je.encAlg {
 	case A256GCM, XC20P:
-		return random.GetRandomBytes(uint32(defKeySize))
+		return random.GetRandomBytes(defKeySize)
 	case A128CBCHS256:
-		return random.GetRandomBytes(uint32(subtle.AES128Size * twoKeys)) // cek: 32 bytes.
+		return random.GetRandomBytes(subtle.AES128Size * twoKeys) // cek: 32 bytes.
 	case A192CBCHS384:
-		return random.GetRandomBytes(uint32(subtle.AES192Size * twoKeys)) // cek: 48 bytes.
+		return random.GetRandomBytes(subtle.AES192Size * twoKeys) // cek: 48 bytes.
 	case A256CBCHS384:
-		return random.GetRandomBytes(uint32(subtle.AES256Size + subtle.AES192Size)) // cek: 56 bytes.
+		return random.GetRandomBytes(subtle.AES256Size + subtle.AES192Size) // cek: 56 bytes.
 	case A256CBCHS512:
-		return random.GetRandomBytes(uint32(subtle.AES256Size * twoKeys)) // cek: 64 bytes.
+		return random.GetRandomBytes(subtle.AES256Size * twoKeys) // cek: 64 bytes.
 	default:
-		return random.GetRandomBytes(uint32(defKeySize)) // default cek: 32 bytes.
+		return random.GetRandomBytes(defKeySize) // default cek: 32 bytes.
 	}
 }
 
@@ -606,7 +611,7 @@ func (je *JWEEncrypt) buildAPUAPV() ([]byte, []byte, error) {
 
 	apvList := []byte(strings.Join(recKIDs, "."))
 	apv32 := sha256.Sum256(apvList)
-	apv := make([]byte, 32)
+	apv := make([]byte, sha256.Size)
 	copy(apv, apv32[:])
 
 	return apu, apv, nil
@@ -693,7 +698,7 @@ func (je *JWEEncrypt) newEPK(cek []byte) (*cryptoapi.PrivateKey, string, error) 
 		if err != nil {
 			return nil, "", fmt.Errorf("newEPK: %w", err)
 		}
-	case "OKP":
+	case okpKty:
 		epk, kwAlg, err = je.okpEPKAndAlg()
 		if err != nil {
 			return nil, "", fmt.Errorf("newEPK: %w", err)
@@ -759,7 +764,7 @@ func (je *JWEEncrypt) okpEPKAndAlg() (*cryptoapi.PrivateKey, string, error) {
 
 	epk := &cryptoapi.PrivateKey{
 		PublicKey: cryptoapi.PublicKey{
-			Type:  "OKP",
+			Type:  okpKty,
 			Curve: "X25519",
 			X:     ephemeralPubKey,
 		},

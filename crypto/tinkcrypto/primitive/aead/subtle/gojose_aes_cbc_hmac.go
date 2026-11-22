@@ -24,7 +24,7 @@ type AESCBCHMAC struct {
 // The key argument should be the AES key, either 16, 24 or 32 bytes to select AES-128, AES-192 or AES-256.
 // ivSize specifies the size of the IV in bytes.
 func NewAESCBCHMAC(key []byte) (*AESCBCHMAC, error) {
-	keySize := uint32(len(key))
+	keySize := uint32(len(key)) //nolint:gosec // key sizes are tiny; overflow would need a 4 GiB key
 
 	if err := ValidateAESKeySizeForGoJose(keySize); err != nil {
 		return nil, fmt.Errorf("aes_cbc_hmac: %w", err)

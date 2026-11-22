@@ -17,7 +17,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard_v2,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	tinkaead "github.com/google/tink/go/aead"
 	"github.com/google/tink/go/hybrid"
 	"github.com/google/tink/go/hybrid/subtle"
@@ -143,8 +143,8 @@ func testPrivateKeyAsKH(t *testing.T, pubKey *cryptoapi.PublicKey) {
 		privECKey, err = ecdsa.GenerateKey(crv, rand.Reader)
 		require.NoError(t, err)
 
-		privKey.PublicKey.X = privECKey.PublicKey.X.Bytes()
-		privKey.PublicKey.Y = privECKey.PublicKey.Y.Bytes()
+		privKey.PublicKey.X = privECKey.X.Bytes()
+		privKey.PublicKey.Y = privECKey.Y.Bytes()
 		privKey.D = privECKey.D.Bytes()
 	} else {
 		pubKOPKey, privOKPKey, err = ed25519.GenerateKey(rand.Reader)
@@ -362,6 +362,6 @@ func TestNegativeCases(t *testing.T) {
 
 type failWriter struct{}
 
-func (w *failWriter) Write(p []byte) (n int, err error) {
+func (w *failWriter) Write(p []byte) (int, error) {
 	return 0, errors.New("failed to write")
 }

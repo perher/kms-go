@@ -26,7 +26,7 @@ const (
 // common errors.
 var (
 	errInvalidsecp256k1VerifierKey     = errors.New("secp256k1_verifier_key_manager: invalid key")
-	errsecp256k1VerifierNotImplemented = errors.New("secp256k1_verifier_key_manager: not implemented")
+	errSecp256k1VerifierNotImplemented = errors.New("secp256k1_verifier_key_manager: not implemented")
 )
 
 // secp256k1VerifierKeyManager is an implementation of KeyManager interface.
@@ -65,13 +65,13 @@ func (km *secp256k1VerifierKeyManager) Primitive(serializedKey []byte) (any, err
 
 // NewKey is not implemented.
 func (km *secp256k1VerifierKeyManager) NewKey(serializedKeyFormat []byte) (proto.Message, error) {
-	return nil, errsecp256k1VerifierNotImplemented
+	return nil, errSecp256k1VerifierNotImplemented
 }
 
 // NewKeyData creates a new KeyData according to specification in  the given
 // serialized secp256k1KeyFormat. It should be used solely by the key management API.
 func (km *secp256k1VerifierKeyManager) NewKeyData(serializedKeyFormat []byte) (*tinkpb.KeyData, error) {
-	return nil, errsecp256k1VerifierNotImplemented
+	return nil, errSecp256k1VerifierNotImplemented
 }
 
 // DoesSupport indicates if this key manager supports the given key type.

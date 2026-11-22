@@ -21,7 +21,7 @@ type crypterImpl struct {
 	crypto encDecrypter
 }
 
-func (c *crypterImpl) Encrypt(msg, aad []byte, kid string) (cipher, nonce []byte, err error) {
+func (c *crypterImpl) Encrypt(msg, aad []byte, kid string) ([]byte, []byte, error) {
 	kh, err := c.kms.Get(kid)
 	if err != nil {
 		return nil, nil, err
@@ -30,7 +30,7 @@ func (c *crypterImpl) Encrypt(msg, aad []byte, kid string) (cipher, nonce []byte
 	return c.crypto.Encrypt(msg, aad, kh)
 }
 
-func (c *crypterImpl) Decrypt(cipher, aad, nonce []byte, kid string) (msg []byte, err error) {
+func (c *crypterImpl) Decrypt(cipher, aad, nonce []byte, kid string) ([]byte, error) {
 	kh, err := c.kms.Get(kid)
 	if err != nil {
 		return nil, err

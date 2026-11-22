@@ -24,6 +24,7 @@ func NewVerifier(h *keyset.Handle) (tink.Verifier, error) {
 }
 
 // NewVerifierWithKeyManager returns a Verifier primitive from the given keyset handle and custom key manager.
+//
 // Deprecated: register the KeyManager and use New above.
 func NewVerifierWithKeyManager(h *keyset.Handle, km registry.KeyManager) (tink.Verifier, error) {
 	ps, err := h.PrimitivesWithKeyManager(km)
@@ -65,7 +66,8 @@ func newWrappedVerifier(ps *primitiveset.PrimitiveSet) (*wrappedVerifier, error)
 var errInvalidSignature = errors.New("verifier_factory: invalid signature")
 
 // Verify checks whether the given signature is a valid signature of the given data.
-// nolint:gocyclo
+//
+//nolint:gocyclo,gocognit // refactor is risky; split when next changing this code
 func (v *wrappedVerifier) Verify(signature, data []byte) error {
 	prefixSize := cryptofmt.NonRawPrefixSize
 	if len(signature) < prefixSize {

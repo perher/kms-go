@@ -28,12 +28,15 @@ func MethodIDFromDIDKey(didKey string) (string, error) {
 	return msID, nil
 }
 
-func getMethodSpecificID(did string) (string, error) {
-	parts := strings.SplitN(did, ":", 3)
+// didParts is the number of colon-separated parts in "did:<method>:<method-specific-id>".
+const didParts = 3
 
-	if len(parts) < 3 {
+func getMethodSpecificID(did string) (string, error) {
+	parts := strings.SplitN(did, ":", didParts)
+
+	if len(parts) < didParts {
 		return "", errors.New("invalid did")
 	}
 
-	return parts[2], nil
+	return parts[didParts-1], nil
 }

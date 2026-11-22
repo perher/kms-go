@@ -89,6 +89,8 @@ func TestCrypto_EncryptDecrypt(t *testing.T) {
 	for _, test := range tests {
 		tc := test
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			kh, err := keyset.NewHandle(tc.aeadTemplate)
 			require.NoError(t, err)
 
@@ -117,6 +119,8 @@ func TestCrypto_EncryptDecrypt(t *testing.T) {
 	}
 
 	t.Run("test bad/nil kh encryption", func(t *testing.T) {
+		t.Parallel()
+
 		kh, err := keyset.NewHandle(tinkaead.AES256GCMKeyTemplate())
 		require.NoError(t, err)
 
@@ -214,7 +218,7 @@ func TestCrypto_SignVerify(t *testing.T) {
 	})
 
 	t.Run("test with P-384 signature", func(t *testing.T) {
-		kh, err := keyset.NewHandle(signature.ECDSAP384KeyTemplate())
+		kh, err := keyset.NewHandle(signature.ECDSAP384SHA512KeyTemplate())
 		require.NoError(t, err)
 
 		badKH, err := keyset.NewHandle(tinkaead.KMSEnvelopeAEADKeyTemplate("babdUrl", nil))

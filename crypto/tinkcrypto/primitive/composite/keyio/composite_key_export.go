@@ -14,7 +14,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard_v2,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	tinkaead "github.com/google/tink/go/aead"
 	hybrid "github.com/google/tink/go/hybrid/subtle"
 	"github.com/google/tink/go/insecurecleartextkeyset"

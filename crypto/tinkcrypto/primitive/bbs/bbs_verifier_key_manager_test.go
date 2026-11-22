@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard_v2,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	commonpb "github.com/google/tink/go/proto/common_go_proto"
 	"github.com/google/tink/go/subtle"
 	"github.com/stretchr/testify/require"

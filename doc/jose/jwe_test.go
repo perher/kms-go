@@ -328,7 +328,7 @@ func TestJSONWebEncryption_Serialize(t *testing.T) {
 				Tag:                "TestTag",
 			}
 			serializedJWE, err := jwe.FullSerialize(json.Marshal)
-			println(serializedJWE)
+			t.Log(serializedJWE)
 			require.NoError(t, err)
 			require.Equal(t, exampleMockJWEIVFieldAbsent, serializedJWE)
 		})

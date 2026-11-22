@@ -17,6 +17,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"slices"
 
 	josecipher "github.com/go-jose/go-jose/v3/cipher"
 	hybrid "github.com/google/tink/go/hybrid/subtle"
@@ -134,15 +135,11 @@ func deriveECDH(priv *ecdsa.PrivateKey, pub *ecdsa.PublicKey, size int) []byte {
 		panic("ECDH-ES output size too large, must be less than or equal to 1<<16")
 	}
 
-	// suppPubInfo is the encoded length of the output size in bits
-	supPubInfo := make([]byte, 4)
-	binary.BigEndian.PutUint32(supPubInfo, uint32(size)*byteSize)
-
-	if !priv.PublicKey.Curve.IsOnCurve(pub.X, pub.Y) {
+	if !priv.IsOnCurve(pub.X, pub.Y) {
 		panic("public key not on same curve as private key")
 	}
 
-	z, _ := priv.Curve.ScalarMult(pub.X, pub.Y, priv.D.Bytes())
+	z, _ := priv.ScalarMult(pub.X, pub.Y, priv.D.Bytes())
 	zBytes := z.Bytes()
 
 	// Note that calling z.Bytes() on a big.Int may strip leading zero bytes from
@@ -211,7 +208,7 @@ func (o *okpKWSupport) wrap(aead any, cek []byte) ([]byte, error) {
 
 	cipherText := aeadPrimitive.Seal(nil, nonce, cek, nil)
 
-	return append(nonce, cipherText...), nil
+	return slices.Concat(nonce, cipherText), nil
 }
 
 func (o *okpKWSupport) unwrap(aead any, encryptedKey []byte) ([]byte, error) {
@@ -234,6 +231,7 @@ func (o *okpKWSupport) unwrap(aead any, encryptedKey []byte) ([]byte, error) {
 	return cek, nil
 }
 
+//nolint:dupl // sender and recipient 1PU derivations mirror each other
 func (o *okpKWSupport) deriveSender1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPriv, senderPrivKey any,
 	recPubKey any, _ int) ([]byte, error) {
 	ephemeralPrivOKP, ok := ephemeralPriv.([]byte)
@@ -273,6 +271,7 @@ func (o *okpKWSupport) deriveSender1Pu(kwAlg string, apu, apv, tag []byte, ephem
 	return derive1Pu(kwAlg, ze, zs, apu, apv, tag, chacha20poly1305.KeySize), nil
 }
 
+//nolint:dupl // sender and recipient 1PU derivations mirror each other
 func (o *okpKWSupport) deriveRecipient1Pu(kwAlg string, apu, apv, tag []byte, ephemeralPub, senderPubKey any,
 	recPrivKey any, _ int) ([]byte, error) {
 	ephemeralPubOKP, ok := ephemeralPub.([]byte)
@@ -328,9 +327,6 @@ func kdfWithTag(kwAlg string, z, apu, apv, tag []byte, keySize int, useTag bool)
 	ptyUInfo := cryptoutil.LengthPrefix(apu)
 	ptyVInfo := cryptoutil.LengthPrefix(apv)
 
-	supPubLen := 4
-	supPubInfo := make([]byte, supPubLen)
-
 	byteLen := 8
 	kdfKeySize := keySize
 
@@ -343,7 +339,7 @@ func kdfWithTag(kwAlg string, z, apu, apv, tag []byte, keySize int, useTag bool)
 		kdfKeySize = subtle.AES256Size
 	}
 
-	binary.BigEndian.PutUint32(supPubInfo, uint32(kdfKeySize)*uint32(byteLen))
+	supPubInfo := binary.BigEndian.AppendUint32(nil, uint32(kdfKeySize)*uint32(byteLen)) //nolint:gosec // kdfKeySize is 16, 24 or 32
 
 	if useTag {
 		// append Tag to SuppPubInfo as described here:

@@ -144,7 +144,7 @@ const (
 	// BLS12381G2 BBS+ key type value.
 	BLS12381G2 = "BLS12381G2"
 	// CLCredDef key type value.
-	CLCredDef = "CLCredDef"
+	CLCredDef = "CLCredDef" //nolint:gosec // G101 false positive: a key type name, not a credential
 	// CLMasterSecret key type value.
 	CLMasterSecret = "CLMasterSecret"
 )

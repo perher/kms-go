@@ -10,9 +10,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard_v2,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	"github.com/google/tink/go/aead"
 	subtleaead "github.com/google/tink/go/aead/subtle"
 	"github.com/google/tink/go/mac"
@@ -21,7 +22,6 @@ import (
 	"github.com/google/tink/go/subtle/random"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/chacha20poly1305"
-	"golang.org/x/crypto/poly1305"
 
 	cbchmacaead "github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/aead"
 	subtlecbchmacaead "github.com/trustbloc/kms-go/crypto/tinkcrypto/primitive/aead/subtle"
@@ -74,10 +74,10 @@ func TestCipherGetters(t *testing.T) {
 			require.EqualValues(t, subtleaead.AESGCMTagSize, rDem.GetTagSize())
 		case ChaCha20Poly1305TypeURL:
 			require.EqualValues(t, chacha20poly1305.NonceSize, rDem.GetIVSize())
-			require.EqualValues(t, poly1305.TagSize, rDem.GetTagSize())
+			require.EqualValues(t, chacha20poly1305.Overhead, rDem.GetTagSize())
 		case XChaCha20Poly1305TypeURL:
 			require.EqualValues(t, chacha20poly1305.NonceSizeX, rDem.GetIVSize())
-			require.EqualValues(t, poly1305.TagSize, rDem.GetTagSize())
+			require.EqualValues(t, chacha20poly1305.Overhead, rDem.GetTagSize())
 		}
 	}
 }
@@ -115,6 +115,8 @@ func TestCipherGettersFailures(t *testing.T) {
 	for _, tt := range tests {
 		tc := tt
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			c := &tinkpb.KeyTemplate{
 				TypeUrl:          tc.typeURL,
 				Value:            []byte("bad serialized key"),
@@ -202,8 +204,7 @@ func TestBuildEncDecData(t *testing.T) {
 		Tag:        random.GetRandomBytes(uint32(rEnc.GetTagSize())),
 	}
 
-	preBuiltCT := append(refEncData.IV, refEncData.Ciphertext...)
-	preBuiltCT = append(preBuiltCT, refEncData.Tag...)
+	preBuiltCT := slices.Concat(refEncData.IV, refEncData.Ciphertext, refEncData.Tag)
 
 	// test BuildDecData
 	finalCT := rEnc.BuildDecData(refEncData)

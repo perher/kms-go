@@ -103,7 +103,7 @@ func (l *storeWriter) newKeysetID() (string, error) {
 
 	for {
 		// generate random ID
-		ksID = base64.RawURLEncoding.EncodeToString(random.GetRandomBytes(uint32(keySetIDLength)))
+		ksID = base64.RawURLEncoding.EncodeToString(random.GetRandomBytes(uint32(keySetIDLength))) //nolint:gosec // G115: DecodedLen of a constant
 
 		// ensure ksID is not already used
 		_, err := l.storage.Get(ksID)

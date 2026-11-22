@@ -94,7 +94,7 @@ func (j *JWK) PublicKeyBytes() ([]byte, error) { //nolint:gocyclo
 	case ed25519.PublicKey:
 		return pubKey, nil
 	case *ecdsa.PublicKey:
-		return elliptic.Marshal(pubKey, pubKey.X, pubKey.Y), nil
+		return elliptic.Marshal(pubKey, pubKey.X, pubKey.Y), nil //nolint:staticcheck // no drop-in replacement: crypto/ecdh lacks secp256k1 and errors where this panics
 	case *rsa.PublicKey:
 		return x509.MarshalPKCS1PublicKey(pubKey), nil
 	default:
@@ -563,10 +563,11 @@ func (b byteBuffer) bigInt() *big.Int {
 }
 
 func newFixedSizeBuffer(data []byte, length int) *byteBuffer {
-	paddedData := make([]byte, length-len(data))
+	paddedData := make([]byte, length)
+	copy(paddedData[length-len(data):], data)
 
 	return &byteBuffer{
-		data: append(paddedData, data...),
+		data: paddedData,
 	}
 }
 

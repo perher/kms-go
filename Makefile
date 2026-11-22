@@ -13,7 +13,7 @@ GOMOCKS=pkg/internal/gomocks
 all: clean checks unit-test
 
 .PHONY: checks
-checks: license #lint
+checks: license lint
 
 .PHONY: lint
 lint:

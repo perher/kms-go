@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 package aead
 
 import (
-	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/proto" //nolint:gomodguard_v2,staticcheck // migration to google.golang.org/protobuf needs an audit of Marshal nil handling
 	commonpb "github.com/google/tink/go/proto/common_go_proto"
 	hmacpb "github.com/google/tink/go/proto/hmac_go_proto"
 	tinkpb "github.com/google/tink/go/proto/tink_go_proto"

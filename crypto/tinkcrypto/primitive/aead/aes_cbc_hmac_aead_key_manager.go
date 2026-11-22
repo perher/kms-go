@@ -171,7 +171,7 @@ func (km *aesCBCHMACAEADKeyManager) validateKey(key *aeadpb.AesCbcHmacAeadKey) e
 	}
 
 	// Validate AesCtrKey.
-	keySize := uint32(len(key.AesCbcKey.KeyValue))
+	keySize := uint32(len(key.AesCbcKey.KeyValue)) //nolint:gosec // key sizes are tiny; overflow would need a 4 GiB key
 	if err := subtle.ValidateAESKeySize(keySize); err != nil {
 		return fmt.Errorf("aes_cbc_hmac_aead_key_manager: %w", err)
 	}

@@ -30,7 +30,7 @@ type AESCBC struct {
 // The key argument should be the AES key, either 16, 24 or 32 bytes to select
 // AES-128, AES-192 or AES-256.
 func NewAESCBC(key []byte) (*AESCBC, error) {
-	keySize := uint32(len(key))
+	keySize := uint32(len(key)) //nolint:gosec // key sizes are tiny; overflow would need a 4 GiB key
 	if err := ValidateAESKeySize(keySize); err != nil {
 		return nil, fmt.Errorf("aes_cbc: NewAESCBC() %w", err)
 	}
@@ -129,7 +129,7 @@ func Pad(text []byte, originalTextSize, blockSize int) []byte {
 	// pad to block size if needed. The value of missing is between 0 and blockSize.
 	missing := blockSize - (originalTextSize % blockSize)
 	if missing > 0 {
-		text = append(text, bytes.Repeat([]byte{byte(missing)}, missing)...)
+		text = append(text, bytes.Repeat([]byte{byte(missing)}, missing)...) //nolint:gosec // missing is at most blockSize (16 for AES)
 
 		return text
 	}
